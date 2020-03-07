@@ -1,6 +1,7 @@
 import java.io.*;
 import visitor.*;
 import syntaxtree.*;
+import symbol.*;
 
 class MyVisitor extends DepthFirstVisitor {
 	public void visit(VarDeclaration n) {
@@ -16,7 +17,10 @@ public class Main {
 	public static void main(String args[]){
 		try {
 			InputStream in = new FileInputStream(args[0]);
-			Node root = new MiniJavaParser(in).Goal();	
+			Node root = new MiniJavaParser(in).Goal();
+			MType allClassList = new MClassList();
+			root.accept(new BuildSymbolTableVisitor(), allClassList);
+			root.accept(new TypeCheckVisitor(), allClassList);
 			root.accept(new MyVisitor());
 		} catch (ParseException e) {
 			e.printStackTrace();
