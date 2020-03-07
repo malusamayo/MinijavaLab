@@ -1,5 +1,5 @@
 package visitor;
 
-public class TypeCheckVisitor extends GJVoidDepthFirst {
+public class TypeCheckVisitor extends GJDepthFirst {
 
 }

@@ -1,5 +1,5 @@
 package visitor;
 
-public class BuildSymbolTableVisitor extends GJVoidDepthFirst {
+public class BuildSymbolTableVisitor extends GJDepthFirst {
 
 }
