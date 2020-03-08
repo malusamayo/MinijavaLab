@@ -22,8 +22,12 @@ public class Main {
 			MType allClassList = new MClassList();
 			root.accept(new BuildSymbolTableVisitor(), allClassList);
 			root.accept(new TypeCheckVisitor(), allClassList);
-			root.accept(new MyVisitor());
-			System.out.println("Hello!");
+			if (ErrorPrinter.getSize() == 0) {
+				System.out.println("Program type checked successfully.");
+			} else {
+				System.out.println("Type error!");
+				ErrorPrinter.printError();
+			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (TokenMgrError e) {
