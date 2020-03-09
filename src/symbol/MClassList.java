@@ -4,9 +4,9 @@ import javax.print.DocFlavor;
 import java.util.HashMap;
 
 public class MClassList extends MType {
-    public HashMap<String, MClass> classList = new HashMap<>();
+    public static HashMap<String, MClass> classList = new HashMap<>();
 
-    public String insert(MClass mClass) {
+    public static String insert(MClass mClass) {
         String errMsg = null;
         if(classList.containsKey(mClass.getName())) {
             errMsg = "repeated class name: " + mClass.getName();
@@ -15,4 +15,9 @@ public class MClassList extends MType {
         }
         return errMsg;
     }
+
+    public static MClass get(String className) {
+        return classList.get(className);
+    }
+
 }

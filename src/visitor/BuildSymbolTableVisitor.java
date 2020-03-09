@@ -43,7 +43,8 @@ public class BuildSymbolTableVisitor extends GJDepthFirst<MType, MType> {
         MClass mainClass = new MClass(classId.getName(), "Object",
                 classId.getRow(), classId.getCol());
         ((MClassList) argu).insert(mainClass);
-        MMethod mainMethod = new MMethod("main", "void", mainClass, n.f6.beginLine, n.f6.beginColumn);
+        MMethod mainMethod = new MMethod("main", "void",
+                mainClass.getName(), n.f6.beginLine, n.f6.beginColumn);
         mainClass.insertMethod(mainMethod);
         MVar mainArg = new MVar(argId.getName(), "String[]", argId.getRow(), argId.getCol());
         mainMethod.insertArg(mainArg);
@@ -157,7 +158,7 @@ public class BuildSymbolTableVisitor extends GJDepthFirst<MType, MType> {
         MIdentifier methodId = (MIdentifier) n.f2.accept(this, argu);
 
         MMethod mMethod = new MMethod(methodId.getName(), returnType.getType(),
-                (MClass) argu, methodId.getRow(), methodId.getCol());
+                ((MClass) argu).getName(), methodId.getRow(), methodId.getCol());
         String errMsg = ((MClass) argu).insertMethod(mMethod);
         if (errMsg != null) {
             ErrorPrinter.addError(errMsg);

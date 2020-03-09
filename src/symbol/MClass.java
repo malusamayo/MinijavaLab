@@ -10,7 +10,6 @@ public class MClass extends MIdentifier {
     public MClass(String className, String parent, int row, int col) {
         super(className, row, col);
         this.parent = parent;
-
     }
 
     public String insertVar(MVar var) {
@@ -23,6 +22,15 @@ public class MClass extends MIdentifier {
         return errMsg;
     }
 
+    public MVar getVar(String var) {
+        MVar mVar = vars.get(var);
+        MClass parentClass = MClassList.get(parent);
+        if (mVar == null && parentClass != null) {
+            mVar = parentClass.getVar(var);
+        }
+        return mVar;
+    }
+
     public String insertMethod(MMethod method) {
         String errMsg = null;
         if(methods.containsKey(method.getName())) {
@@ -31,6 +39,21 @@ public class MClass extends MIdentifier {
             methods.put(method.getName(), method);
         }
         return errMsg;
+    }
+
+    // a problem: circular inheritance would lead to infinite loop?
+    // actually not, since if circular inheritance happens, we will never check its contents!
+    public MMethod getMethod(String method) {
+        MMethod curMethod = methods.get(method);
+        MClass parentClass = MClassList.get(parent);
+        if (curMethod == null && parentClass != null) {
+            curMethod = MClassList.get(parent).getMethod(method);
+        }
+        return curMethod;
+    }
+
+    public String getParentName() {
+        return parent;
     }
 
 }
