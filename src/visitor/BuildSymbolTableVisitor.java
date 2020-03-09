@@ -201,6 +201,9 @@ public class BuildSymbolTableVisitor extends GJDepthFirst<MType, MType> {
      */
     public MType visit(Type n, MType argu) {
         MType _ret = n.f0.accept(this, argu);
+        if (n.f0.choice instanceof Identifier) {
+            _ret = new MType(((MIdentifier) _ret).getName());
+        }
         return _ret;
     }
 

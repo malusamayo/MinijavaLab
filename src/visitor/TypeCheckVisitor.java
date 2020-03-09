@@ -209,9 +209,12 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         MMethod curMethod = (MMethod) argu;
         MVar leftVar = curMethod.getVar(leftName.getType());
         if (leftVar == null) {
-            String errMsg = "undefined variable: " + leftVar.getName();
+            String errMsg = "undefined variable: " + leftName.getType();
             ErrorPrinter.addError(errMsg);
         } else {
+            if (rightType == null) {
+                int i = 1;
+            }
             handleTypeMismatch(leftVar.getType(), rightType.getType(), "equal", n.f0.f0.beginLine);
         }
         return _ret;
@@ -318,6 +321,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      *       | PrimaryExpression()
      */
     public MType visit(Expression n, MType argu) {
+        // we expect all expressions return a type
         MType _ret = n.f0.accept(this, argu);
 //        if (_ret == null)
 //            _ret = new MType("none");
@@ -440,7 +444,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f5 -> ")"
      */
     public MType visit(MessageSend n, MType argu) {
-        MType _ret=null;
+        MType _ret = new MType("token");
         MType type = n.f0.accept(this, argu);
         // f0 should be a user-defined class
         MClass curClass = MClassList.get(type.getType());
@@ -458,18 +462,18 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
             ErrorPrinter.addError(errMsg);
             return _ret;
         }
-
         MMethod tempMethod = new MMethod(curMethod.getName(), curMethod.getReturnType(),
                 curMethod.getParent(), curMethod.getRow(), curMethod.getCol());
 
         n.f3.accept(this, argu);
         n.f4.accept(this, argu);
         n.f5.accept(this, argu);
+
         tempMethod.args.addAll(((MMethod) argu).tmpArgs);
         ((MMethod) argu).tmpArgs.clear();
-        if(curMethod.isEqual(tempMethod)) {
-            _ret = new MType(curMethod.getReturnType());
-        }
+
+        curMethod.isEqual(tempMethod);
+        _ret = new MType(curMethod.getReturnType());
         return _ret;
     }
 
@@ -566,7 +570,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f0 -> "this"
      */
     public MType visit(ThisExpression n, MType argu) {
-        MType _ret=null;
+        MType _ret = new MType("token");
         n.f0.accept(this, argu);
         if (argu instanceof MClass) {
             _ret = new MType(((MClass) argu).getName());
