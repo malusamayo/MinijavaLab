@@ -9,9 +9,9 @@ import java.util.HashSet;
 
 public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
 
-    public void handleTypeMismatch(String inType, String destType, String info) {
+    public void handleTypeMismatch(String inType, String destType, String info, int line) {
         if (!inType.equals(destType)) {
-            String errMsg = "type mismatch (" + info + "): " + inType + ", " + destType;
+            String errMsg = "type mismatch (" + info + "): " + inType + ", " + destType + " in line " + line;
             ErrorPrinter.addError(errMsg);
         }
     }
@@ -212,7 +212,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
             String errMsg = "undefined variable: " + leftVar.getName();
             ErrorPrinter.addError(errMsg);
         } else {
-            handleTypeMismatch(leftVar.getType(), rightType.getType(), "equal");
+            handleTypeMismatch(leftVar.getType(), rightType.getType(), "equal", n.f0.f0.beginLine);
         }
         return _ret;
     }
@@ -241,10 +241,10 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
             String errMsg = "undefined variable: " + leftVar.getName();
             ErrorPrinter.addError(errMsg);
         } else {
-            handleTypeMismatch(leftVar.getType(), "int[]", "array");
-            handleTypeMismatch(rightType.getType(), "int", "array");
+            handleTypeMismatch(leftVar.getType(), "int[]", "array", n.f0.f0.beginLine);
+            handleTypeMismatch(rightType.getType(), "int", "array", n.f0.f0.beginLine);
         }
-        handleTypeMismatch(indexType.getType(), "int", "array index");
+        handleTypeMismatch(indexType.getType(), "int", "array index", n.f0.f0.beginLine);
         return _ret;
     }
 
@@ -262,7 +262,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         MType conditionType = n.f2.accept(this, argu);
-        handleTypeMismatch(conditionType.getType(), "boolean", "if");
+        handleTypeMismatch(conditionType.getType(), "boolean", "if", n.f0.beginLine);
         n.f3.accept(this, argu);
         n.f4.accept(this, argu);
         n.f5.accept(this, argu);
@@ -282,7 +282,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         MType conditionType = n.f2.accept(this, argu);
-        handleTypeMismatch(conditionType.getType(), "boolean", "while");
+        handleTypeMismatch(conditionType.getType(), "boolean", "while", n.f0.beginLine);
         n.f3.accept(this, argu);
         n.f4.accept(this, argu);
         return _ret;
@@ -300,7 +300,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         MType printType = n.f2.accept(this, argu);
-        handleTypeMismatch(printType.getType(), "int", "print");
+        handleTypeMismatch(printType.getType(), "int", "print", n.f0.beginLine);
         n.f3.accept(this, argu);
         n.f4.accept(this, argu);
         return _ret;
@@ -334,8 +334,8 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         MType leftType = n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         MType rightType = n.f2.accept(this, argu);
-        handleTypeMismatch(leftType.getType(), "boolean", "&&");
-        handleTypeMismatch(rightType.getType(), "boolean", "&&");
+        handleTypeMismatch(leftType.getType(), "boolean", "&&", n.f1.beginLine);
+        handleTypeMismatch(rightType.getType(), "boolean", "&&", n.f1.beginLine);
         return _ret;
     }
 
@@ -350,8 +350,8 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         MType leftType = n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         MType rightType = n.f2.accept(this, argu);
-        handleTypeMismatch(leftType.getType(), "int", "<");
-        handleTypeMismatch(rightType.getType(), "int", "<");
+        handleTypeMismatch(leftType.getType(), "int", "<", n.f1.beginLine);
+        handleTypeMismatch(rightType.getType(), "int", "<", n.f1.beginLine);
         return _ret;
     }
 
@@ -365,8 +365,8 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         MType leftType = n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         MType rightType = n.f2.accept(this, argu);
-        handleTypeMismatch(leftType.getType(), "int", "+");
-        handleTypeMismatch(rightType.getType(), "int", "+");
+        handleTypeMismatch(leftType.getType(), "int", "+", n.f1.beginLine);
+        handleTypeMismatch(rightType.getType(), "int", "+", n.f1.beginLine);
         return _ret;
     }
 
@@ -380,8 +380,8 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         MType leftType = n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         MType rightType = n.f2.accept(this, argu);
-        handleTypeMismatch(leftType.getType(), "int", "-");
-        handleTypeMismatch(rightType.getType(), "int", "-");
+        handleTypeMismatch(leftType.getType(), "int", "-", n.f1.beginLine);
+        handleTypeMismatch(rightType.getType(), "int", "-", n.f1.beginLine);
         return _ret;
     }
 
@@ -395,8 +395,8 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         MType leftType = n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         MType rightType = n.f2.accept(this, argu);
-        handleTypeMismatch(leftType.getType(), "int", "*");
-        handleTypeMismatch(rightType.getType(), "int", "*");
+        handleTypeMismatch(leftType.getType(), "int", "*", n.f1.beginLine);
+        handleTypeMismatch(rightType.getType(), "int", "*", n.f1.beginLine);
         return _ret;
     }
 
@@ -407,13 +407,13 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f3 -> "]"
      */
     public MType visit(ArrayLookup n, MType argu) {
-        MType _ret=null;
+        MType _ret = new MType("int");
         MType varType = n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         MType indexType = n.f2.accept(this, argu);
         n.f3.accept(this, argu);
-        handleTypeMismatch(varType.getType(), "int[]", "array lookup");
-        handleTypeMismatch(indexType.getType(), "int", "array lookup index");
+        handleTypeMismatch(varType.getType(), "int[]", "array lookup", n.f1.beginLine);
+        handleTypeMismatch(indexType.getType(), "int", "array lookup index", n.f1.beginLine);
         return _ret;
     }
 
@@ -423,11 +423,11 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f2 -> "length"
      */
     public MType visit(ArrayLength n, MType argu) {
-        MType _ret=null;
+        MType _ret = new MType("int");
         MType varType = n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         n.f2.accept(this, argu);
-        handleTypeMismatch(varType.getType(), "int[]", "array length");
+        handleTypeMismatch(varType.getType(), "int[]", "array length", n.f1.beginLine);
         return _ret;
     }
 
@@ -466,6 +466,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         n.f4.accept(this, argu);
         n.f5.accept(this, argu);
         tempMethod.args.addAll(((MMethod) argu).tmpArgs);
+        ((MMethod) argu).tmpArgs.clear();
         if(curMethod.isEqual(tempMethod)) {
             _ret = new MType(curMethod.getReturnType());
         }
@@ -589,7 +590,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         n.f2.accept(this, argu);
         MType lenType = n.f3.accept(this, argu);
         n.f4.accept(this, argu);
-        handleTypeMismatch(lenType.getType(), "int", "array alloc len");
+        handleTypeMismatch(lenType.getType(), "int", "array alloc len", n.f0.beginLine);
         return _ret;
     }
 
@@ -621,7 +622,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         MType _ret = new MType("boolean");
         n.f0.accept(this, argu);
         MType expType = n.f1.accept(this, argu);
-        handleTypeMismatch(expType.getType(), "boolean", "!");
+        handleTypeMismatch(expType.getType(), "boolean", "!", n.f0.beginLine);
         return _ret;
     }
 
