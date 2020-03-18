@@ -16,6 +16,7 @@ class MyVisitor extends DepthFirstVisitor {
 public class Main {
 	// TODO 子类赋值给父类未实现
 	// 这个似乎number类型只有int？
+	// 小问题：同一个方法的嵌套定义变量似乎词法分析根本不允许
 	public static void main(String[] args){
 		try {
 			InputStream in = new FileInputStream(args[0]);

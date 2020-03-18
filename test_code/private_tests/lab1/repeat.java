@@ -7,10 +7,18 @@ class Main {
 
 class N
 {
-    public int doit(int x)
+    int x;
+    public int doit()
     {
+        int a;
         N m;
+        a = this.doit();
         m = new N();
+        if(true) {
+            int s;
+            int a; // javac会报重复定义错，然而这种情况似乎在minijava词法分析阶段就不允许
+            s = 1;
+        }
         return 1;
     }
 }
@@ -21,7 +29,7 @@ class M extends N
     {
         M m;
         N n;
-        n = new M();
+        // n = new M();
         return 0;
     }
 }
