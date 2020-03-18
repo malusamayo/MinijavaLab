@@ -7,10 +7,10 @@ class Main {
 
 class N
 {
-    public int doit()
+    public int doit(int x)
     {
         N m;
-        m = new N();
+        N m;
         m = new N();
         return 1;
     }
