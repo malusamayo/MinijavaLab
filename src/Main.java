@@ -14,10 +14,9 @@ class MyVisitor extends DepthFirstVisitor {
 }
 
 public class Main {
-	public static void main(String args[]){
+	public static void main(String[] args){
 		try {
-			InputStream in = new FileInputStream("Factorial.java");
-			//InputStream in = new FileInputStream(args[0]);
+			InputStream in = new FileInputStream(args[0]);
 			Node root = new MiniJavaParser(in).Goal();
 			MType allClassList = new MClassList();
 			root.accept(new BuildSymbolTableVisitor(), allClassList);
@@ -28,11 +27,7 @@ public class Main {
 				System.out.println("Type error!");
 				ErrorPrinter.printError();
 			}
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} catch (TokenMgrError e) {
-			e.printStackTrace();
-		} catch (Exception e) {
+		} catch (TokenMgrError | Exception e) {
 			e.printStackTrace();
 		}
 	}
