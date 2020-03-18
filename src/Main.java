@@ -15,7 +15,8 @@ class MyVisitor extends DepthFirstVisitor {
 
 public class Main {
 	// TODO 子类赋值给父类未实现
-	// TODO 未检查变量重复定义类，方法和变量
+	// TODO 未检查变量重复定义变量
+	// 这个似乎number类型只有int？
 	public static void main(String[] args){
 		try {
 			InputStream in = new FileInputStream(args[0]);
