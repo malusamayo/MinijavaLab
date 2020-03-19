@@ -36,7 +36,7 @@ class M extends N
         M m;
         N n;
         int N;
-        // n = new N();
+        n = new N();
         n = new M();
         System.out.println(N);
         return 0;
@@ -50,7 +50,7 @@ class P extends M
         M m;
         N n;
         int N;
-        // n = new P(); // 子类的子类也可以赋值给父类
+        n = new P(); // 子类的子类也可以赋值给父类
         return 0;
     }
 }

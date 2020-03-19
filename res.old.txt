@@ -375,20 +375,17 @@ Program type checked successfully.
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test56.java
-Type error!
-type mismatch (equal): A, B in line 18
+Program type checked successfully.
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test57.java
-Type error!
-type mismatch (equal): A, C in line 22
+Program type checked successfully.
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test58.java
-Type error!
-type mismatch (equal): B, C in line 22
+Program type checked successfully.
 **********************************************************************************
 
 **********************************************************************************

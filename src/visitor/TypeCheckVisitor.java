@@ -13,10 +13,13 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         String tmp = destType;
         while (!tmp.equals("Object")) {
             if (inType.equals(tmp)) return;
+            if (MClassList.get(tmp) == null) break;
             tmp = MClassList.get(tmp).parent;
         }
-        String errMsg = "type mismatch (" + info + "): " + inType + ", " + destType + " in line " + line;
-        ErrorPrinter.addError(errMsg);
+        if (!inType.equals(destType)) {
+            String errMsg = "type mismatch (" + info + "): " + inType + ", " + destType + " in line " + line;
+            ErrorPrinter.addError(errMsg);
+        }
     }
     /**
      * f0 -> "class"
