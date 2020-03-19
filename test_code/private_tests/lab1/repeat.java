@@ -1,5 +1,7 @@
 class Main {
     public static void main(String[] a){
+        int p;
+        int q;
         System.out.println(1);
     }
 }
@@ -12,7 +14,11 @@ class N
     {
         int a;
         N m;
+        int[] arr;
         a = this.doit();
+        arr = new int[5];
+        System.out.println(arr.length);
+        System.out.println(arr[6]);
         m = new N();
 //        if(true) {
 //            int s;

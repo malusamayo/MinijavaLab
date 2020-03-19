@@ -39,7 +39,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         MType _ret=null;
         n.f0.accept(this, argu);
         MType className = n.f1.accept(this, argu);
-        MClass mainClass = ((MClassList) argu).get(className.getType());
+        MClass mainClass = MClassList.get(className.getType());
         MMethod mainMethod = mainClass.getMethod("main");
         n.f2.accept(this, argu);
         n.f3.accept(this, argu);
@@ -97,14 +97,14 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         n.f2.accept(this, argu);
         MType parentClassName = n.f3.accept(this, argu);
         // check undefined parent class
-        if (((MClassList) argu).get(parentClassName.getType()) == null) {
+        if (MClassList.get(parentClassName.getType()) == null) {
             String errMsg = "extending undefined class " + parentClassName.getType();
             ErrorPrinter.addError(errMsg);
             return _ret;
         }
         // check circular definition
         HashSet<String> checkedClass = new HashSet<>();
-        MClass curClass = ((MClassList) argu).get(className.getType());
+        MClass curClass = MClassList.get(className.getType());
         while (curClass != null) {
             if (checkedClass.contains(curClass.getName())) {
                 String errMsg = "circular definition: " + checkedClass.toString();
@@ -112,11 +112,11 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
                 return _ret;
             }
             checkedClass.add(curClass.getName());
-            curClass = ((MClassList) argu).get(curClass.getParentName());
+            curClass = MClassList.get(curClass.getParentName());
         }
         n.f4.accept(this, argu);
         n.f5.accept(this, argu);
-        n.f6.accept(this, ((MClassList) argu).get(className.getType()));
+        n.f6.accept(this, MClassList.get(className.getType()));
         n.f7.accept(this, argu);
         return _ret;
     }

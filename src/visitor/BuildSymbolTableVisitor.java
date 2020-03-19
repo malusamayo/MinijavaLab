@@ -42,7 +42,7 @@ public class BuildSymbolTableVisitor extends GJDepthFirst<MType, MType> {
 
         MClass mainClass = new MClass(classId.getName(), "Object",
                 classId.getRow(), classId.getCol());
-        ((MClassList) argu).insert(mainClass);
+        MClassList.insert(mainClass);
         MMethod mainMethod = new MMethod("main", "void",
                 mainClass.getName(), n.f6.beginLine, n.f6.beginColumn);
         mainClass.insertMethod(mainMethod);
@@ -72,7 +72,7 @@ public class BuildSymbolTableVisitor extends GJDepthFirst<MType, MType> {
         MIdentifier classId = (MIdentifier) n.f1.accept(this, argu);
         MClass mClass = new MClass(classId.getName(), "Object",
                 classId.getRow(), classId.getCol());
-        String errMsg = ((MClassList) argu).insert(mClass);
+        String errMsg = MClassList.insert(mClass);
         if (errMsg != null) {
             ErrorPrinter.addError(errMsg);
             return _ret;
@@ -102,7 +102,7 @@ public class BuildSymbolTableVisitor extends GJDepthFirst<MType, MType> {
         MIdentifier parentId = (MIdentifier) n.f3.accept(this, argu);
         MClass mClass = new MClass(classId.getName(), parentId.getName(),
                 classId.getRow(), classId.getCol());
-        String errMsg = ((MClassList) argu).insert(mClass);
+        String errMsg = MClassList.insert(mClass);
         if (errMsg != null) {
             ErrorPrinter.addError(errMsg);
             return _ret;
