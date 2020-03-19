@@ -6,6 +6,7 @@ do
   # shellcheck disable=SC2129
   echo "**********************************************************************************" >> "$workplace/res.txt"
   echo "${file}" >> "$workplace/res.txt"
+  grep -ns TE "$file" >> "$workplace/res.txt"
   java Main "$file" >> "$workplace/res.txt"
   echo "**********************************************************************************" >> "$workplace/res.txt"
   printf "\n" >> "$workplace/res.txt"

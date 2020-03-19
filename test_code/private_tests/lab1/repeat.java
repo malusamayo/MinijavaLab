@@ -14,11 +14,11 @@ class N
         N m;
         a = this.doit();
         m = new N();
-        if(true) {
-            int s;
-            int a; // javac会报重复定义错，然而这种情况似乎在minijava词法分析阶段就不允许
-            s = 1;
-        }
+//        if(true) {
+//            int s;
+//            int a; // javac会报重复定义错，然而这种情况似乎在minijava词法分析阶段就不允许
+//            s = 1;
+//        }
         return 1;
     }
 }
@@ -29,7 +29,22 @@ class M extends N
     {
         M m;
         N n;
+        int N;
+        n = new N();
         // n = new M();
+        System.out.println(N);
+        return 0;
+    }
+}
+
+class P extends M
+{
+    public int doittt(int x)
+    {
+        M m;
+        N n;
+        int N;
+        // n = new P(); // 子类的子类也可以赋值给父类
         return 0;
     }
 }
