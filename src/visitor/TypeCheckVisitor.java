@@ -21,6 +21,12 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
             ErrorPrinter.addError(errMsg);
         }
     }
+
+    public void handleUndefined(String info, int line) {
+        String errMsg = "undefined " + info + " in line " + line;
+        ErrorPrinter.addError(errMsg);
+    }
+
     /**
      * f0 -> "class"
      * f1 -> Identifier()
@@ -104,8 +110,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         MType parentClassName = n.f3.accept(this, argu);
         // check undefined parent class
         if (MClassList.get(parentClassName.getType()) == null) {
-            String errMsg = "extending undefined class " + parentClassName.getType();
-            ErrorPrinter.addError(errMsg);
+            handleUndefined("extended class: " + parentClassName.getType(), n.f2.beginLine);
             return _ret;
         }
         // check circular definition
@@ -173,10 +178,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         n.f12.accept(this, argu);
 
         // check return type consistency
-        if (!returnType.getType().equals(topMethod.getReturnType())) {
-            String errMsg = "return type inconsistency in class " + topClass.getName() + " method " + topMethod.getName();
-            ErrorPrinter.addError(errMsg);
-        }
+        handleTypeMismatch(topMethod.getReturnType(), returnType.getType(), "return", n.f9.beginLine);
         return _ret;
     }
 
@@ -193,8 +195,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         if (n.f0.choice instanceof Identifier) {
             String className = ((Identifier) n.f0.choice).f0.toString();
             if (MClassList.get(className) == null) {
-                String errMsg = "undefined class: " + className;
-                ErrorPrinter.addError(errMsg);
+                handleUndefined("class: " + className, ((Identifier) n.f0.choice).f0.beginLine);
             }
         }
         return _ret;
@@ -215,11 +216,10 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         MMethod curMethod = (MMethod) argu;
         MVar leftVar = curMethod.getVar(leftName.getType());
         if (leftVar == null) {
-            String errMsg = "undefined variable: " + leftName.getType();
-            ErrorPrinter.addError(errMsg);
+            handleUndefined("variable: " + leftName.getType(), n.f1.beginLine);
         } else {
             assert rightType != null;
-            handleTypeMismatch(leftVar.getType(), rightType.getType(), "equal", n.f0.f0.beginLine);
+            handleTypeMismatch(leftVar.getType(), rightType.getType(), "assign", n.f0.f0.beginLine);
         }
         return _ret;
     }
@@ -245,8 +245,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         MMethod curMethod = (MMethod) argu;
         MVar leftVar = curMethod.getVar(leftName.getType());
         if (leftVar == null) {
-            String errMsg = "undefined variable: " + leftVar.getName();
-            ErrorPrinter.addError(errMsg);
+            handleUndefined("variable: " + leftVar.getName(), n.f1.beginLine);
         } else {
             handleTypeMismatch(leftVar.getType(), "int[]", "array", n.f0.f0.beginLine);
             handleTypeMismatch(rightType.getType(), "int", "array", n.f0.f0.beginLine);
@@ -453,8 +452,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         // f0 should be a user-defined class
         MClass curClass = MClassList.get(type.getType());
         if (curClass == null) {
-            String errMsg = "undefined class: " + type.getType();
-            ErrorPrinter.addError(errMsg);
+            handleUndefined("user class: " + type.getType(), n.f1.beginLine);
             return _ret;
         }
         n.f1.accept(this, argu);
@@ -462,8 +460,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         MType methodName = n.f2.accept(this, argu);
         MMethod curMethod = curClass.getMethod(methodName.getType());
         if (curMethod == null) {
-            String errMsg = "undefined method: " + methodName.getType();
-            ErrorPrinter.addError(errMsg);
+            handleUndefined("method: " + methodName.getType(), n.f1.beginLine);
             return _ret;
         }
         MMethod tempMethod = new MMethod(curMethod.getName(), curMethod.getReturnType(),
@@ -523,8 +520,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
             MMethod curMethod = (MMethod) argu;
             MVar var = curMethod.getVar(_ret.getType());
             if (var == null) {
-                String errMsg = "undefined variable: " + _ret.getType();
-                ErrorPrinter.addError(errMsg);
+                handleUndefined("variable: " + _ret.getType(), ((Identifier) n.f0.choice).f0.beginLine);
             } else
                 _ret = new MType(var.getType());
         }
@@ -616,8 +612,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         n.f2.accept(this, argu);
         n.f3.accept(this, argu);
         if (MClassList.get(className.getType()) == null) {
-            String errMsg = "undefined class: " + className.getType();
-            ErrorPrinter.addError(errMsg);
+            handleUndefined("class: " + className.getType(), n.f0.beginLine);
         }
         return _ret;
     }
