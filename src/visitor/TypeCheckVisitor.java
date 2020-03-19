@@ -10,10 +10,13 @@ import java.util.HashSet;
 public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
 
     public void handleTypeMismatch(String inType, String destType, String info, int line) {
-        if (!inType.equals(destType)) {
-            String errMsg = "type mismatch (" + info + "): " + inType + ", " + destType + " in line " + line;
-            ErrorPrinter.addError(errMsg);
+        String tmp = destType;
+        while (!tmp.equals("Object")) {
+            if (inType.equals(tmp)) return;
+            tmp = MClassList.get(tmp).parent;
         }
+        String errMsg = "type mismatch (" + info + "): " + inType + ", " + destType + " in line " + line;
+        ErrorPrinter.addError(errMsg);
     }
     /**
      * f0 -> "class"
@@ -212,9 +215,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
             String errMsg = "undefined variable: " + leftName.getType();
             ErrorPrinter.addError(errMsg);
         } else {
-            if (rightType == null) {
-                int i = 1;
-            }
+            assert rightType != null;
             handleTypeMismatch(leftVar.getType(), rightType.getType(), "equal", n.f0.f0.beginLine);
         }
         return _ret;

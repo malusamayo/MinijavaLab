@@ -36,8 +36,8 @@ class M extends N
         M m;
         N n;
         int N;
-        n = new N();
-        // n = new M();
+        // n = new N();
+        n = new M();
         System.out.println(N);
         return 0;
     }
