@@ -56,4 +56,14 @@ public class MClass extends MIdentifier {
         return parent;
     }
 
+    public boolean isChildOf(String name) {
+        MClass curClass = this;
+        while (curClass != null) {
+            if (curClass.getName().equals(name))
+                return true;
+            curClass = MClassList.get(curClass.getParentName());
+        }
+        return false;
+    }
+
 }

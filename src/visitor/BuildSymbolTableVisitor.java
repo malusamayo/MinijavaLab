@@ -111,6 +111,7 @@ public class BuildSymbolTableVisitor extends GJDepthFirst<MType, MType> {
         }
 
         // check circular definition
+        // if there is a circle, when the last edge is added, we could always find it
         HashSet<String> checkedClass = new HashSet<>();
         MClass curClass = MClassList.get(classId.getName());
         while (curClass != null) {

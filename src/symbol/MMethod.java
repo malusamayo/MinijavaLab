@@ -1,8 +1,6 @@
 package symbol;
 
-import javax.print.DocFlavor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class MMethod extends MIdentifier {
@@ -10,7 +8,7 @@ public class MMethod extends MIdentifier {
     public String parent; // the method's class
     public HashMap<String, MVar> vars = new HashMap<>();
     public ArrayList<MVar> args = new ArrayList<>();
-    public ArrayList<MVar> tmpArgs = new ArrayList<>(); // used for temp check
+    public ArrayList<MVar> realArgs = new ArrayList<>(); // used for temp check
 
     public MMethod(String name, String returnType, String parent, int row, int col) {
         super(name, row, col);
@@ -42,8 +40,8 @@ public class MMethod extends MIdentifier {
         return errMsg;
     }
 
-    public void insertTmpArg(MVar var) {
-        tmpArgs.add(var);
+    public void insertRealArgs(MVar var) {
+        realArgs.add(var);
     }
 
     public ArrayList<MVar> getArgs() {
@@ -58,7 +56,7 @@ public class MMethod extends MIdentifier {
         return parent;
     }
 
-    // check parameters and return type
+    // check parameters and return type, which should be identical
     public boolean isEqual(MMethod mMethod) {
         ArrayList<MVar> mArgs = mMethod.getArgs();
         if (args.size() != mArgs.size()) {
@@ -67,7 +65,7 @@ public class MMethod extends MIdentifier {
             return false;
         }
         for (int i = 0; i < args.size(); i++) {
-            if (!args.get(i).getType().equals(args.get(i).getType())) {
+            if (!args.get(i).getType().equals(mArgs.get(i).getType())) {
                 String errMsg = "overloaded methods (arg type mismatch): " + this.getName();
                 ErrorPrinter.addError(errMsg);
                 return false;
@@ -79,6 +77,21 @@ public class MMethod extends MIdentifier {
             return false;
         }
         return true;
+    }
+
+    public static void checkRealArgs(ArrayList<MVar> args, ArrayList<MVar> realArgs,String info, int line) {
+        for (int i = 0; i < args.size(); i++) {
+            String argType = args.get(i).getType();
+            String realArgType = realArgs.get(i).getType();
+            if (argType.equals(realArgType))
+                continue;
+            MClass mClass = MClassList.get(realArgType);
+            if (mClass != null && !mClass.isChildOf(argType)) {
+                String errMsg = "arg type mismatch: " + info + " in line " + line;
+                ErrorPrinter.addError(errMsg);
+            }
+        }
+        realArgs.clear();
     }
 
 }

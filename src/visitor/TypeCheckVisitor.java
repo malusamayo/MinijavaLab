@@ -3,10 +3,6 @@ package visitor;
 import syntaxtree.*;
 import symbol.*;
 
-import javax.management.remote.rmi._RMIConnection_Stub;
-import java.util.ArrayList;
-import java.util.HashSet;
-
 public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
 
     public void handleTypeMismatch(String inType, String destType, String info, int line) {
@@ -113,18 +109,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
             handleUndefined("extended class: " + parentClassName.getType(), n.f2.beginLine);
             return _ret;
         }
-        // check circular definition
-        HashSet<String> checkedClass = new HashSet<>();
-        MClass curClass = MClassList.get(className.getType());
-        while (curClass != null) {
-            if (checkedClass.contains(curClass.getName())) {
-                String errMsg = "circular definition: " + checkedClass.toString();
-                ErrorPrinter.addError(errMsg);
-                return _ret;
-            }
-            checkedClass.add(curClass.getName());
-            curClass = MClassList.get(curClass.getParentName());
-        }
+
         n.f4.accept(this, argu);
         n.f5.accept(this, argu);
         n.f6.accept(this, MClassList.get(className.getType()));
@@ -159,10 +144,9 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         MClass curClass = MClassList.get(topClass.getParentName());
         while(curClass != null) {
             MMethod curMethod = curClass.getMethod(methodName.getType());
-            if (curMethod == null)
-                break;
-            if (!topMethod.isEqual(curMethod))
+            if (curMethod != null && !topMethod.isEqual(curMethod)) {
                 return _ret;
+            }
             curClass = MClassList.get(curClass.getParentName());
         }
 
@@ -463,17 +447,13 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
             handleUndefined("method: " + methodName.getType(), n.f1.beginLine);
             return _ret;
         }
-        MMethod tempMethod = new MMethod(curMethod.getName(), curMethod.getReturnType(),
-                curMethod.getParent(), curMethod.getRow(), curMethod.getCol());
 
         n.f3.accept(this, argu);
         n.f4.accept(this, argu);
         n.f5.accept(this, argu);
 
-        tempMethod.args.addAll(((MMethod) argu).tmpArgs);
-        ((MMethod) argu).tmpArgs.clear();
+        MMethod.checkRealArgs(curMethod.getArgs(), ((MMethod) argu).realArgs, methodName.getType(), n.f1.beginLine);
 
-        curMethod.isEqual(tempMethod);
         _ret = new MType(curMethod.getReturnType());
         return _ret;
     }
@@ -485,7 +465,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
     public MType visit(ExpressionList n, MType argu) {
         MType _ret=null;
         MType type = n.f0.accept(this, argu);
-        ((MMethod) argu).insertTmpArg(new MVar("token", type.getType(), -1, -1));
+        ((MMethod) argu).insertRealArgs(new MVar("token", type.getType(), -1, -1));
         n.f1.accept(this, argu);
         return _ret;
     }
@@ -498,7 +478,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         MType _ret=null;
         n.f0.accept(this, argu);
         MType type = n.f1.accept(this, argu);
-        ((MMethod) argu).insertTmpArg(new MVar("token", type.getType(), -1, -1));
+        ((MMethod) argu).insertRealArgs(new MVar("token", type.getType(), -1, -1));
         return _ret;
     }
 
