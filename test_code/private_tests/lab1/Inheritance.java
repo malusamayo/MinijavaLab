@@ -17,7 +17,7 @@ class C {
         return 1;
     }
     public A g(A k) {
-        M m;
+        // M m;
         B b;
         return b;
     }
@@ -27,6 +27,7 @@ class C {
         int k;
 //        b = a;
         a = b;
+        k = this.f(b, b);
         return this.f(a, b);
     }
 }
