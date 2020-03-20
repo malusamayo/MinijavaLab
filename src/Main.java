@@ -14,19 +14,24 @@ class MyVisitor extends DepthFirstVisitor {
 }
 
 public class Main {
-	// TODO 子类赋值给父类未实现
 	public static void main(String[] args){
 		try {
 			InputStream in = new FileInputStream(args[0]);
 			Node root = new MiniJavaParser(in).Goal();
 			MType allClassList = new MClassList();
 			root.accept(new BuildSymbolTableVisitor(), allClassList);
-			root.accept(new TypeCheckVisitor(), allClassList);
-			if (ErrorPrinter.getSize() == 0) {
-				System.out.println("Program type checked successfully.");
-			} else {
+			if (ErrorPrinter.getSize() != 0) {
 				System.out.println("Type error!");
 				ErrorPrinter.printError();
+			}
+			else {
+				root.accept(new TypeCheckVisitor(), allClassList);
+				if (ErrorPrinter.getSize() == 0) {
+					System.out.println("Program type checked successfully.");
+				} else {
+					System.out.println("Type error!");
+					ErrorPrinter.printError();
+				}
 			}
 		} catch (TokenMgrError | Exception e) {
 			e.printStackTrace();

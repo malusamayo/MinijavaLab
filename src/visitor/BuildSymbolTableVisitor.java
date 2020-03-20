@@ -3,6 +3,8 @@ package visitor;
 import symbol.*;
 import syntaxtree.*;
 
+import java.util.HashSet;
+
 public class BuildSymbolTableVisitor extends GJDepthFirst<MType, MType> {
 
     /**
@@ -107,6 +109,20 @@ public class BuildSymbolTableVisitor extends GJDepthFirst<MType, MType> {
             ErrorPrinter.addError(errMsg);
             return _ret;
         }
+
+        // check circular definition
+        HashSet<String> checkedClass = new HashSet<>();
+        MClass curClass = MClassList.get(classId.getName());
+        while (curClass != null) {
+            if (checkedClass.contains(curClass.getName())) {
+                errMsg = "circular definition: " + checkedClass.toString();
+                ErrorPrinter.addError(errMsg);
+                return _ret;
+            }
+            checkedClass.add(curClass.getName());
+            curClass = MClassList.get(curClass.getParentName());
+        }
+
         n.f4.accept(this, argu);
         n.f5.accept(this, mClass);
         n.f6.accept(this, mClass);

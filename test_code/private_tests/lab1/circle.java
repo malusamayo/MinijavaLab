@@ -17,3 +17,13 @@ class B extends C {
 class C extends A {
 
 }
+
+class D {
+    public int test() {
+        C c;
+        int x;
+        c = new C();
+        x = c.f();
+        return 0;
+    }
+}
