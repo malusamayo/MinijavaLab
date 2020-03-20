@@ -6,16 +6,13 @@ import symbol.*;
 public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
 
     public void handleTypeMismatch(String inType, String destType, String info, int line) {
-        String tmp = destType;
-        while (!tmp.equals("Object")) {
-            if (inType.equals(tmp)) return;
-            if (MClassList.get(tmp) == null) break;
-            tmp = MClassList.get(tmp).parent;
-        }
-        if (!inType.equals(destType)) {
-            String errMsg = "type mismatch (" + info + "): " + inType + ", " + destType + " in line " + line;
-            ErrorPrinter.addError(errMsg);
-        }
+        if (inType.equals(destType))
+            return;
+        MClass mClass = MClassList.get(destType);
+        if (mClass != null && mClass.isChildOf(inType))
+            return;
+        String errMsg = "type mismatch (" + info + "): " + inType + ", " + destType + " in line " + line;
+        ErrorPrinter.addError(errMsg);
     }
 
     public void handleUndefined(String info, int line) {
@@ -104,6 +101,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         MType className = n.f1.accept(this, argu);
         n.f2.accept(this, argu);
         MType parentClassName = n.f3.accept(this, argu);
+
         // check undefined parent class
         if (MClassList.get(parentClassName.getType()) == null) {
             handleUndefined("extended class: " + parentClassName.getType(), n.f2.beginLine);
@@ -499,9 +497,9 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         if (n.f0.choice instanceof Identifier) {
             MMethod curMethod = (MMethod) argu;
             MVar var = curMethod.getVar(_ret.getType());
-            if (var == null) {
+            if (var == null)
                 handleUndefined("variable: " + _ret.getType(), ((Identifier) n.f0.choice).f0.beginLine);
-            } else
+            else
                 _ret = new MType(var.getType());
         }
 //        if (_ret == null)
@@ -540,7 +538,6 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f0 -> <IDENTIFIER>
      */
     public MType visit(Identifier n, MType argu) {
-        // problem: different cases here?
         MType _ret= new MType(n.f0.toString());
         n.f0.accept(this, argu);
         return _ret;

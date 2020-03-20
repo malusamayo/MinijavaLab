@@ -8,7 +8,7 @@ public class MMethod extends MIdentifier {
     public String parent; // the method's class
     public HashMap<String, MVar> vars = new HashMap<>();
     public ArrayList<MVar> args = new ArrayList<>();
-    public ArrayList<MVar> realArgs = new ArrayList<>(); // used for temp check
+    public ArrayList<MVar> realArgs = new ArrayList<>(); // used for real arg check
 
     public MMethod(String name, String returnType, String parent, int row, int col) {
         super(name, row, col);
@@ -79,7 +79,7 @@ public class MMethod extends MIdentifier {
         return true;
     }
 
-    public static void checkRealArgs(ArrayList<MVar> args, ArrayList<MVar> realArgs,String info, int line) {
+    public static void checkRealArgs(ArrayList<MVar> args, ArrayList<MVar> realArgs, String info, int line) {
         if (args.size() != realArgs.size()) {
             String errMsg = "arg number mismatch: " + info + " in line " + line;
             ErrorPrinter.addError(errMsg);
@@ -88,13 +88,14 @@ public class MMethod extends MIdentifier {
         for (int i = 0; i < args.size(); i++) {
             String argType = args.get(i).getType();
             String realArgType = realArgs.get(i).getType();
+            // check inheritance
             if (argType.equals(realArgType))
                 continue;
             MClass mClass = MClassList.get(realArgType);
-            if (mClass != null && !mClass.isChildOf(argType)) {
-                String errMsg = "arg type mismatch: " + info + " in line " + line;
-                ErrorPrinter.addError(errMsg);
-            }
+            if (mClass != null && mClass.isChildOf(argType))
+                continue;
+            String errMsg = "arg type mismatch: " + info +  " in line " + line;
+            ErrorPrinter.addError(errMsg);
         }
         realArgs.clear();
     }
