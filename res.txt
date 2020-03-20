@@ -536,14 +536,14 @@ Program type checked successfully.
 ../../../test_code/private_tests/tests/test83.java
 14:	i = test.next(5, 5);	// TE
 Type error!
-overloaded methods (arg number unequal): next
+arg number mismatch: next in line 14
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test84.java
 14:	i = test.next(true);	// TE
 Type error!
-overloaded methods (arg number unequal): next
+arg number mismatch: next in line 14
 **********************************************************************************
 
 **********************************************************************************
@@ -569,7 +569,7 @@ type mismatch (+): boolean, int in line 13
 ../../../test_code/private_tests/tests/test88.java
 14:	test = test.next(test, i);	// TE
 Type error!
-overloaded methods (arg number unequal): next
+arg number mismatch: next in line 14
 **********************************************************************************
 
 **********************************************************************************

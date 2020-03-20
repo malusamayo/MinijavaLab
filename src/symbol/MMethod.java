@@ -80,6 +80,11 @@ public class MMethod extends MIdentifier {
     }
 
     public static void checkRealArgs(ArrayList<MVar> args, ArrayList<MVar> realArgs,String info, int line) {
+        if (args.size() != realArgs.size()) {
+            String errMsg = "arg number mismatch: " + info + " in line " + line;
+            ErrorPrinter.addError(errMsg);
+            return;
+        }
         for (int i = 0; i < args.size(); i++) {
             String argType = args.get(i).getType();
             String realArgType = realArgs.get(i).getType();
