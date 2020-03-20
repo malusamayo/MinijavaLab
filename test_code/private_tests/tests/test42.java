@@ -17,7 +17,7 @@ class Test{
 
     public Test next(){
 
-	if (true) System.out.println(1); else System.out.println(0); // TE
+	if (true) System.out.println(1); else System.out.println(0); // TE // no TE --commented by yy
 
 	return test;
 
