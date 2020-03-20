@@ -60,42 +60,42 @@ Program type checked successfully.
 ../../../test_code/private_tests/tests/test11.java
 20:	resultint = op1bool && op2bool;	// TE
 Type error!
-type mismatch (equal): int, boolean in line 20
+type mismatch (assign): int, boolean in line 20
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test12.java
 20:	resultint = op1int < op2int;	// TE
 Type error!
-type mismatch (equal): int, boolean in line 20
+type mismatch (assign): int, boolean in line 20
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test13.java
 20:	resultbool = op1int + op2int;	// TE
 Type error!
-type mismatch (equal): boolean, int in line 20
+type mismatch (assign): boolean, int in line 20
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test14.java
 20:	resultbool = op1int - op2int;	// TE
 Type error!
-type mismatch (equal): boolean, int in line 20
+type mismatch (assign): boolean, int in line 20
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test15.java
 20:	resultbool = op1int * op2int;	// TE
 Type error!
-type mismatch (equal): boolean, int in line 20
+type mismatch (assign): boolean, int in line 20
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test16.java
 11:	System.out.println(op);	// TE TE
 Type error!
-undefined variable: op
+undefined variable: op in line 11
 type mismatch (print): op, int in line 11
 **********************************************************************************
 
@@ -103,8 +103,8 @@ type mismatch (print): op, int in line 11
 ../../../test_code/private_tests/tests/test17.java
 19:	result = op;	// TE TE
 Type error!
-undefined variable: op
-type mismatch (equal): int, op in line 19
+undefined variable: op in line 19
+type mismatch (assign): int, op in line 19
 **********************************************************************************
 
 **********************************************************************************
@@ -118,15 +118,15 @@ type mismatch (array lookup): int, int[] in line 14
 ../../../test_code/private_tests/tests/test19.java
 15:	op = 5;		// TE
 Type error!
-type mismatch (equal): int[], int in line 15
+type mismatch (assign): int[], int in line 15
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test20.java
 17:	result = op.start();		// TE
 Type error!
-undefined class: int[]
-type mismatch (equal): int, token in line 17
+undefined user class: int[] in line 17
+type mismatch (assign): int, token in line 17
 **********************************************************************************
 
 **********************************************************************************
@@ -187,16 +187,16 @@ type mismatch (!): Test, boolean in line 13
 ../../../test_code/private_tests/tests/test29.java
 14:	test = new op();	// TE TE
 Type error!
-undefined class: op
-type mismatch (equal): Test, op in line 14
+undefined class: op in line 14
+type mismatch (assign): Test, op in line 14
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test30.java
 13:	test = new test();	// TE TE
 Type error!
-undefined class: test
-type mismatch (equal): Test, test in line 13
+undefined class: test in line 13
+type mismatch (assign): Test, test in line 13
 **********************************************************************************
 
 **********************************************************************************
@@ -344,28 +344,28 @@ type mismatch (array): int[], int in line 16
 ../../../test_code/private_tests/tests/test51.java
 14:	result = test;	// TE
 Type error!
-type mismatch (equal): int, Test in line 14
+type mismatch (assign): int, Test in line 14
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test52.java
 14:	result = op;	// TE
 Type error!
-type mismatch (equal): boolean, int in line 14
+type mismatch (assign): boolean, int in line 14
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test53.java
 16:	result = op;	// TE
 Type error!
-type mismatch (equal): int[], int in line 16
+type mismatch (assign): int[], int in line 16
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test54.java
 18:	test = test2;	// TE
 Type error!
-type mismatch (equal): Test, Test2 in line 18
+type mismatch (assign): Test, Test2 in line 18
 **********************************************************************************
 
 **********************************************************************************
@@ -392,21 +392,21 @@ Program type checked successfully.
 ../../../test_code/private_tests/tests/test59.java
 18:	b = a;	// TE
 Type error!
-type mismatch (equal): B, A in line 18
+type mismatch (assign): B, A in line 18
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test60.java
 22:	c = b;	// TE
 Type error!
-type mismatch (equal): C, B in line 22
+type mismatch (assign): C, B in line 22
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test61.java
 22:	c = a;	// TE
 Type error!
-type mismatch (equal): C, A in line 22
+type mismatch (assign): C, A in line 22
 **********************************************************************************
 
 **********************************************************************************
@@ -418,41 +418,40 @@ Program type checked successfully.
 ../../../test_code/private_tests/tests/test63.java
 17:	test2 = this;	// TE
 Type error!
-type mismatch (equal): Test2, Test in line 17
+type mismatch (assign): Test2, Test in line 17
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test64.java
 11:	i = 10;	// TE
 Type error!
-undefined variable: i
+undefined variable: i in line 11
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test65.java
 20:	return true;	// TE
 Type error!
-return type inconsistency in class Test method next
+type mismatch (return): Test, boolean in line 20
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test66.java
-Type error!
-return type inconsistency in class Test method next
+Program type checked successfully.
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test67.java
 21:	return i;	// TE
 Type error!
-return type inconsistency in class Test method next
+type mismatch (return): Test, int in line 21
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test68.java
 33:	return test21.start();	// TE
 Type error!
-return type inconsistency in class Test method next
+type mismatch (return): Test, Test2 in line 33
 **********************************************************************************
 
 **********************************************************************************
@@ -460,14 +459,13 @@ return type inconsistency in class Test method next
 9:    public Test2 start(){  //TE
 Type error!
 overloaded methods (return type mismatch): start
-return type inconsistency in class Test method next
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test70.java
 21:	i = false;	// TE
 Type error!
-type mismatch (equal): Test, int in line 14
+type mismatch (assign): Test, int in line 14
 **********************************************************************************
 
 **********************************************************************************
@@ -481,7 +479,7 @@ repeated variable name i in class: next
 ../../../test_code/private_tests/tests/test72.java
 7:class Test extends NotPresent {  //TE
 Type error!
-extending undefined class NotPresent
+undefined extended class: NotPresent in line 7
 **********************************************************************************
 
 **********************************************************************************
@@ -538,14 +536,14 @@ Program type checked successfully.
 ../../../test_code/private_tests/tests/test83.java
 14:	i = test.next(5, 5);	// TE
 Type error!
-overloaded methods (arg number unequal): next
+arg number mismatch: next in line 14
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test84.java
 14:	i = test.next(true);	// TE
 Type error!
-overloaded methods (arg number unequal): next
+arg number mismatch: next in line 14
 **********************************************************************************
 
 **********************************************************************************
@@ -557,7 +555,7 @@ Program type checked successfully.
 ../../../test_code/private_tests/tests/test86.java
 17:	test = new Test2();	// TE
 Type error!
-type mismatch (equal): Test, Test2 in line 17
+type mismatch (assign): Test, Test2 in line 17
 **********************************************************************************
 
 **********************************************************************************
@@ -571,7 +569,7 @@ type mismatch (+): boolean, int in line 13
 ../../../test_code/private_tests/tests/test88.java
 14:	test = test.next(test, i);	// TE
 Type error!
-overloaded methods (arg number unequal): next
+arg number mismatch: next in line 14
 **********************************************************************************
 
 **********************************************************************************
@@ -588,16 +586,16 @@ Program type checked successfully.
 ../../../test_code/private_tests/tests/test91.java
 16:	test = test.next(i);	// TE TE
 Type error!
-undefined method: next
-type mismatch (equal): Test, token in line 16
+undefined method: next in line 16
+type mismatch (assign): Test, token in line 16
 **********************************************************************************
 
 **********************************************************************************
 ../../../test_code/private_tests/tests/test92.java
 24:	test = test.next(i);	// TE TE
 Type error!
-undefined method: next
-type mismatch (equal): Test, token in line 24
+undefined method: next in line 24
+type mismatch (assign): Test, token in line 24
 **********************************************************************************
 
 **********************************************************************************
