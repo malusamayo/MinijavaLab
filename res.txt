@@ -1,5 +1,10 @@
 My Test:
 **********************************************************************************
+../../../test_code/private_tests/tests/test0.yy.java
+Program type checked successfully.
+**********************************************************************************
+
+**********************************************************************************
 ../../../test_code/private_tests/tests/test00.java
 28:    public int next(){ // TE
 Type error!
@@ -279,9 +284,15 @@ type mismatch (if): Test, boolean in line 13
 **********************************************************************************
 ../../../test_code/private_tests/tests/test42.java
 13:	if (test.next()) System.out.println(1); else System.out.println(0); // TE
-20:	if (true) System.out.println(1); else System.out.println(0); // TE
+20:	if (true) System.out.println(1); else System.out.println(0); // TE // no TE --commented by yy
 Type error!
 type mismatch (if): Test, boolean in line 13
+**********************************************************************************
+
+**********************************************************************************
+../../../test_code/private_tests/tests/test42.yy.java
+20:        if (true) System.out.println(1); else System.out.println(0); // TE
+Program type checked successfully.
 **********************************************************************************
 
 **********************************************************************************

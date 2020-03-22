@@ -19,7 +19,7 @@ public class MMethod extends MIdentifier {
     public String insertVar(MVar var) {
         String errMsg = null;
         if(vars.containsKey(var.getName())) {
-            errMsg = "repeated variable name " + var.getName() + " in class: " + this.name;
+            errMsg = "repeated variable name " + var.getName() + " in method: " + this.name;
         } else {
             vars.put(var.getName(), var);
         }
