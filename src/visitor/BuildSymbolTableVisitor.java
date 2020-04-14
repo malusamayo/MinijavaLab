@@ -28,7 +28,7 @@ public class BuildSymbolTableVisitor extends GJDepthFirst<MType, MType> {
      * f17 -> "}"
      */
     public MType visit(MainClass n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         n.f0.accept(this, argu);
         MIdentifier classId = (MIdentifier) n.f1.accept(this, argu);
         n.f2.accept(this, argu);
@@ -40,7 +40,7 @@ public class BuildSymbolTableVisitor extends GJDepthFirst<MType, MType> {
         n.f8.accept(this, argu);
         n.f9.accept(this, argu);
         n.f10.accept(this, argu);
-        MIdentifier argId= (MIdentifier) n.f11.accept(this, argu);
+        MIdentifier argId = (MIdentifier) n.f11.accept(this, argu);
 
         MClass mainClass = new MClass(classId.getName(), "Object",
                 classId.getRow(), classId.getCol());
@@ -69,7 +69,7 @@ public class BuildSymbolTableVisitor extends GJDepthFirst<MType, MType> {
      * f5 -> "}"
      */
     public MType visit(ClassDeclaration n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         n.f0.accept(this, argu);
         MIdentifier classId = (MIdentifier) n.f1.accept(this, argu);
         MClass mClass = new MClass(classId.getName(), "Object",
@@ -97,7 +97,7 @@ public class BuildSymbolTableVisitor extends GJDepthFirst<MType, MType> {
      * f7 -> "}"
      */
     public MType visit(ClassExtendsDeclaration n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         n.f0.accept(this, argu);
         MIdentifier classId = (MIdentifier) n.f1.accept(this, argu);
         n.f2.accept(this, argu);
@@ -137,7 +137,7 @@ public class BuildSymbolTableVisitor extends GJDepthFirst<MType, MType> {
      * f2 -> ";"
      */
     public MType visit(VarDeclaration n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         MType varType = n.f0.accept(this, argu);
         MIdentifier varId = (MIdentifier) n.f1.accept(this, argu);
         n.f2.accept(this, argu);
@@ -169,7 +169,7 @@ public class BuildSymbolTableVisitor extends GJDepthFirst<MType, MType> {
      * f12 -> "}"
      */
     public MType visit(MethodDeclaration n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         n.f0.accept(this, argu);
         MType returnType = n.f1.accept(this, argu);
         MIdentifier methodId = (MIdentifier) n.f2.accept(this, argu);
@@ -200,7 +200,7 @@ public class BuildSymbolTableVisitor extends GJDepthFirst<MType, MType> {
      * f1 -> Identifier()
      */
     public MType visit(FormalParameter n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         MType paraType = n.f0.accept(this, argu);
         MIdentifier paraId = (MIdentifier) n.f1.accept(this, argu);
         MVar var = new MVar(paraId.getName(), paraType.getType(), paraId.getRow(), paraId.getCol());
@@ -212,9 +212,9 @@ public class BuildSymbolTableVisitor extends GJDepthFirst<MType, MType> {
 
     /**
      * f0 -> ArrayType()
-     *       | BooleanType()
-     *       | IntegerType()
-     *       | Identifier()
+     * | BooleanType()
+     * | IntegerType()
+     * | Identifier()
      */
     public MType visit(Type n, MType argu) {
         MType _ret = n.f0.accept(this, argu);
@@ -259,7 +259,7 @@ public class BuildSymbolTableVisitor extends GJDepthFirst<MType, MType> {
      * f0 -> <IDENTIFIER>
      */
     public MType visit(Identifier n, MType argu) {
-        MType _ret= new MIdentifier(n.f0.toString(), n.f0.beginLine, n.f0.beginColumn);
+        MType _ret = new MIdentifier(n.f0.toString(), n.f0.beginLine, n.f0.beginColumn);
         n.f0.accept(this, argu);
         return _ret;
     }

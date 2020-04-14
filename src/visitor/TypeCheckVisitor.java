@@ -41,7 +41,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f17 -> "}"
      */
     public MType visit(MainClass n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         n.f0.accept(this, argu);
         MType className = n.f1.accept(this, argu);
         MClass mainClass = MClassList.get(className.getType());
@@ -74,9 +74,9 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f5 -> "}"
      */
     public MType visit(ClassDeclaration n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         n.f0.accept(this, argu);
-        MType className =  n.f1.accept(this, argu);
+        MType className = n.f1.accept(this, argu);
         MClass mClass = MClassList.get(className.getType());
         n.f2.accept(this, argu);
         n.f3.accept(this, argu);
@@ -96,7 +96,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f7 -> "}"
      */
     public MType visit(ClassExtendsDeclaration n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         n.f0.accept(this, argu);
         MType className = n.f1.accept(this, argu);
         n.f2.accept(this, argu);
@@ -131,7 +131,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f12 -> "}"
      */
     public MType visit(MethodDeclaration n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         MType methodName = n.f2.accept(this, argu);
@@ -140,7 +140,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
 
         // check override
         MClass curClass = MClassList.get(topClass.getParentName());
-        while(curClass != null) {
+        while (curClass != null) {
             MMethod curMethod = curClass.getMethod(methodName.getType());
             if (curMethod != null && !topMethod.isEqual(curMethod)) {
                 return _ret;
@@ -166,12 +166,12 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
 
     /**
      * f0 -> ArrayType()
-     *       | BooleanType()
-     *       | IntegerType()
-     *       | Identifier()
+     * | BooleanType()
+     * | IntegerType()
+     * | Identifier()
      */
     public MType visit(Type n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         n.f0.accept(this, argu);
         // we only have to check undefined class here once and for all
         if (n.f0.choice instanceof Identifier) {
@@ -190,7 +190,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f3 -> ";"
      */
     public MType visit(AssignmentStatement n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         MType leftName = n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         MType rightType = n.f2.accept(this, argu);
@@ -216,7 +216,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f6 -> ";"
      */
     public MType visit(ArrayAssignmentStatement n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         MType leftName = n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         MType indexType = n.f2.accept(this, argu);
@@ -246,7 +246,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f6 -> Statement()
      */
     public MType visit(IfStatement n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         MType conditionType = n.f2.accept(this, argu);
@@ -266,7 +266,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f4 -> Statement()
      */
     public MType visit(WhileStatement n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         MType conditionType = n.f2.accept(this, argu);
@@ -284,7 +284,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f4 -> ";"
      */
     public MType visit(PrintStatement n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         MType printType = n.f2.accept(this, argu);
@@ -296,14 +296,14 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
 
     /**
      * f0 -> AndExpression()
-     *       | CompareExpression()
-     *       | PlusExpression()
-     *       | MinusExpression()
-     *       | TimesExpression()
-     *       | ArrayLookup()
-     *       | ArrayLength()
-     *       | MessageSend()
-     *       | PrimaryExpression()
+     * | CompareExpression()
+     * | PlusExpression()
+     * | MinusExpression()
+     * | TimesExpression()
+     * | ArrayLookup()
+     * | ArrayLength()
+     * | MessageSend()
+     * | PrimaryExpression()
      */
     public MType visit(Expression n, MType argu) {
         // we expect all expressions return a type
@@ -461,7 +461,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f1 -> ( ExpressionRest() )*
      */
     public MType visit(ExpressionList n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         MType type = n.f0.accept(this, argu);
         ((MMethod) argu).insertRealArgs(new MVar("token", type.getType(), -1, -1));
         n.f1.accept(this, argu);
@@ -473,7 +473,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f1 -> Expression()
      */
     public MType visit(ExpressionRest n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         n.f0.accept(this, argu);
         MType type = n.f1.accept(this, argu);
         ((MMethod) argu).insertRealArgs(new MVar("token", type.getType(), -1, -1));
@@ -482,14 +482,14 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
 
     /**
      * f0 -> IntegerLiteral()
-     *       | TrueLiteral()
-     *       | FalseLiteral()
-     *       | Identifier()
-     *       | ThisExpression()
-     *       | ArrayAllocationExpression()
-     *       | AllocationExpression()
-     *       | NotExpression()
-     *       | BracketExpression()
+     * | TrueLiteral()
+     * | FalseLiteral()
+     * | Identifier()
+     * | ThisExpression()
+     * | ArrayAllocationExpression()
+     * | AllocationExpression()
+     * | NotExpression()
+     * | BracketExpression()
      */
     public MType visit(PrimaryExpression n, MType argu) {
         MType _ret = n.f0.accept(this, argu);
@@ -538,7 +538,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f0 -> <IDENTIFIER>
      */
     public MType visit(Identifier n, MType argu) {
-        MType _ret= new MType(n.f0.toString());
+        MType _ret = new MType(n.f0.toString());
         n.f0.accept(this, argu);
         return _ret;
     }
@@ -582,7 +582,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f3 -> ")"
      */
     public MType visit(AllocationExpression n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         n.f0.accept(this, argu);
         MType className = n.f1.accept(this, argu);
         _ret = new MType(className.getType());
@@ -612,7 +612,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
      * f2 -> ")"
      */
     public MType visit(BracketExpression n, MType argu) {
-        MType _ret=null;
+        MType _ret = null;
         n.f0.accept(this, argu);
         _ret = n.f1.accept(this, argu);
         n.f2.accept(this, argu);
