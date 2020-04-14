@@ -33,6 +33,8 @@ public class Main {
 					ErrorPrinter.printError();
 				}
 			}
+
+			// Lab2 starts from here
 		} catch (TokenMgrError | Exception e) {
 			e.printStackTrace();
 		}
