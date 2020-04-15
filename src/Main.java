@@ -15,6 +15,7 @@ public class Main {
             if (ErrorPrinter.getSize() != 0) {
                 System.out.println("Type error!");
                 ErrorPrinter.printError();
+                throw new ParseException("TE");
             } else {
                 root.accept(new TypeCheckVisitor(), allClassList);
                 if (ErrorPrinter.getSize() == 0) {
@@ -22,10 +23,12 @@ public class Main {
                 } else {
                     System.out.println("Type error!");
                     ErrorPrinter.printError();
+                    throw new ParseException("TE");
                 }
             }
 
             // Lab2 starts from here
+            root.accept(new PigletTranslatorVisitor(), allClassList);
         } catch (TokenMgrError | Exception e) {
             e.printStackTrace();
         }
