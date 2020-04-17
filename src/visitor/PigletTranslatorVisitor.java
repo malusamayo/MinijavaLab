@@ -162,7 +162,6 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
     }
 
 
-
     /**
      * f0 -> PrimaryExpression()
      * f1 -> "."
@@ -283,7 +282,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
                 PigletPrinter.myPrintln(String.format("HLOAD TEMP %d TEMP 0 %d",
                         tmpTempNum, varOffset));
                 PigletPrinter.ReturnPrinter();
-                PigletPrinter.myPrintln(String.format("Temp %d", tmpTempNum));
+                PigletPrinter.myPrintln(String.format("TEMP %d", tmpTempNum));
                 PigletPrinter.EndPrinter();
             } else {
                 // 有超过了18个参数，需要从Temp19指向的数组中提取元素
@@ -370,11 +369,11 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
 
     /**
      * f0 -> Block()
-     *       | AssignmentStatement() done
-     *       | ArrayAssignmentStatement() done
-     *       | IfStatement() done
-     *       | WhileStatement()
-     *       | PrintStatement() done
+     * | AssignmentStatement() done
+     * | ArrayAssignmentStatement() done
+     * | IfStatement() done
+     * | WhileStatement()
+     * | PrintStatement() done
      */
     public MType visit(Statement n, MType argu) {
         n.f0.accept(this, argu);
@@ -391,14 +390,14 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
     public MType visit(WhileStatement n, MType argu) {
         int label1 = labelNum++, label2 = labelNum++;
         PigletPrinter.myPrintln("");
-        PigletPrinter.myPrint("L"+label1);
+        PigletPrinter.myPrint("L" + label1);
         PigletPrinter.myPrintWithTab("CJUMP ");
         n.f2.accept(this, argu);
-        PigletPrinter.myPrintlnWithTab("L"+label2);
+        PigletPrinter.myPrintlnWithTab("L" + label2);
         n.f4.accept(this, argu);
         PigletPrinter.myPrintln("");
         PigletPrinter.myPrintlnWithTab("JUMP L" + label1);
-        PigletPrinter.myPrint("L"+label2);
+        PigletPrinter.myPrint("L" + label2);
         PigletPrinter.myPrintlnWithTab("NOOP");
         return null;
     }
@@ -413,6 +412,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
     public MType visit(PrintStatement n, MType argu) {
         PigletPrinter.myPrintWithTab("PRINT ");
         n.f2.accept(this, argu);
+        PigletPrinter.myPrintln("");
         return null;
     }
 
@@ -564,22 +564,23 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         assert (argInfo.curArgIdx >= 2);
         if (argInfo.curArgIdx < 19) {
             n.f1.accept(this, argInfo.curMethod);
-        } else if (argInfo.curArgIdx == 19) {
-            PigletPrinter.BeginPrinter(false);
-            argInfo.tmpTempNum = tempNum++;
-            PigletPrinter.myPrintlnWithTab(String.format("MOVE TEMP %d HALLOCATE %d",
-                    argInfo.tmpTempNum, 4 * (argInfo.curMethod.args.size() - 18)));
-            PigletPrinter.myPrint(String.format("HSTORE TEMP %d 0 ", argInfo.tmpTempNum));
-            n.f1.accept(this, argInfo.curMethod);
         } else {
-            PigletPrinter.myPrint(String.format("HSTORE TEMP %d %d ", argInfo.tmpTempNum,
-                    4 * (argInfo.curArgIdx - 19)));
+            if (argInfo.curArgIdx == 19) {
+                PigletPrinter.BeginPrinter(false);
+                argInfo.tmpTempNum = tempNum++;
+                PigletPrinter.myPrintlnWithTab(String.format("MOVE TEMP %d HALLOCATE %d",
+                        argInfo.tmpTempNum, 4 * (argInfo.curMethod.args.size() - 18)));
+                PigletPrinter.myPrint(String.format("HSTORE TEMP %d 0 ", argInfo.tmpTempNum));
+            } else {
+                PigletPrinter.myPrint(String.format("HSTORE TEMP %d %d ", argInfo.tmpTempNum,
+                        4 * (argInfo.curArgIdx - 19)));
+            }
             n.f1.accept(this, argInfo.curMethod);
-        }
-        if (argInfo.curArgIdx == argInfo.curMethod.args.size()) {
-            PigletPrinter.ReturnPrinter();
-            PigletPrinter.myPrintln(String.format("TEMP %d", argInfo.tmpTempNum));
-            PigletPrinter.EndPrinter();
+            if (argInfo.curArgIdx == argInfo.curMethod.args.size()) {
+                PigletPrinter.ReturnPrinter();
+                PigletPrinter.myPrintln(String.format("TEMP %d", argInfo.tmpTempNum));
+                PigletPrinter.EndPrinter();
+            }
         }
         return null;
     }
