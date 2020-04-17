@@ -161,18 +161,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         return null;
     }
 
-    /**
-     * f0 -> "System.out.println"
-     * f1 -> "("
-     * f2 -> Expression()
-     * f3 -> ")"
-     * f4 -> ";"
-     */
-    public MType visit(PrintStatement n, MType argu) {
-        PigletPrinter.myPrintWithTab("PRINT ");
-        n.f2.accept(this, argu);
-        return null;
-    }
+
 
     /**
      * f0 -> PrimaryExpression()
@@ -380,6 +369,54 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
     }
 
     /**
+     * f0 -> Block()
+     *       | AssignmentStatement() done
+     *       | ArrayAssignmentStatement() done
+     *       | IfStatement() done
+     *       | WhileStatement()
+     *       | PrintStatement() done
+     */
+    public MType visit(Statement n, MType argu) {
+        n.f0.accept(this, argu);
+        return null;
+    }
+
+    /**
+     * f0 -> "while"
+     * f1 -> "("
+     * f2 -> Expression()
+     * f3 -> ")"
+     * f4 -> Statement()
+     */
+    public MType visit(WhileStatement n, MType argu) {
+        int label1 = labelNum++, label2 = labelNum++;
+        PigletPrinter.myPrintln("");
+        PigletPrinter.myPrint("L"+label1);
+        PigletPrinter.myPrintWithTab("CJUMP ");
+        n.f2.accept(this, argu);
+        PigletPrinter.myPrintlnWithTab("L"+label2);
+        n.f4.accept(this, argu);
+        PigletPrinter.myPrintln("");
+        PigletPrinter.myPrintlnWithTab("JUMP L" + label1);
+        PigletPrinter.myPrint("L"+label2);
+        PigletPrinter.myPrintlnWithTab("NOOP");
+        return null;
+    }
+
+    /**
+     * f0 -> "System.out.println"
+     * f1 -> "("
+     * f2 -> Expression()
+     * f3 -> ")"
+     * f4 -> ";"
+     */
+    public MType visit(PrintStatement n, MType argu) {
+        PigletPrinter.myPrintWithTab("PRINT ");
+        n.f2.accept(this, argu);
+        return null;
+    }
+
+    /**
      * f0 -> "if"
      * f1 -> "("
      * f2 -> Expression()
@@ -496,8 +533,8 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
      * | PlusExpression() done
      * | MinusExpression() done
      * | TimesExpression() done
-     * | ArrayLookup()
-     * | ArrayLength()
+     * | ArrayLookup() done
+     * | ArrayLength() done
      * | MessageSend() done
      * | PrimaryExpression()
      */
@@ -597,7 +634,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
      * | FalseLiteral() done
      * | Identifier() done
      * | ThisExpression() done
-     * | ArrayAllocationExpression()
+     * | ArrayAllocationExpression() done
      * | AllocationExpression() done
      * | NotExpression() done
      * | BracketExpression() done
