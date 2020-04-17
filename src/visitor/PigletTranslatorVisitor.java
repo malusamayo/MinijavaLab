@@ -20,6 +20,25 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         return ret;
     }
 
+    private int getVarOffset(String varName, String className) {
+        Vector<String> thisVarList = Variables.get(className);
+        String realName = String.format("%s_%s", className, varName);
+        for (int idx = 0; idx < thisVarList.size(); ++idx) {
+            if (thisVarList.get(idx).equals(realName))
+                return (idx + 1) * 4;
+        }
+        throw new UnknownError("Unknown Error from get member variables");
+    }
+
+    private void getFromOver18(int tmp, int offset, String idName) {
+        PigletPrinter.BeginPrinter(true);
+        PigletPrinter.myPrintln(String.format("HLOAD TEMP %d TEMP 19 %d",
+                tmp, offset));
+        PigletPrinter.ReturnPrinter();
+        PigletPrinter.myPrintln(String.format("TEMP %d", tmp));
+        PigletPrinter.EndPrinter();
+    }
+
     private void buildVariables(MClass curClass) {
         assert curClass != null;
         MClass thisClass = curClass;
@@ -31,10 +50,8 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         }
         // add root variables first
         for (int idx = classList.size() - 1; idx >= 0; idx--) {
-            for (String var : classList.get(idx).vars.keySet()) {
-                if (!varList.contains(var)) {
-                    varList.add(var);
-                }
+            for (String key : classList.get(idx).vars.keySet()) {
+                varList.add(String.format("%s_%s", classList.get(idx).getName(), key));
             }
         }
         Variables.put(thisClass.getName(), varList);
@@ -149,9 +166,8 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
      * f4 -> ";"
      */
     public MType visit(PrintStatement n, MType argu) {
-        PigletPrinter.myPrint("PRINT");
+        PigletPrinter.myPrintWithTab("PRINT ");
         n.f2.accept(this, argu);
-        PigletPrinter.myPrint("\n");
         return null;
     }
 
@@ -183,24 +199,22 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         int methodsTemp = tempNum++;
         String calledMethodName = n.f2.f0.toString();
         PigletPrinter.myPrintln("CALL");
-        PigletPrinter.BeginPrinter();
-        PigletPrinter.myPrint("MOVE TEMP " + instanceTemp + " ");
+        PigletPrinter.BeginPrinter(true);
+        PigletPrinter.myPrintWithTab("MOVE TEMP " + instanceTemp + " ");
 
         // process PrimaryExpression
         String calledClassName = n.f0.accept(this, argu).getType();
         MMethod calledMethod = MClassList.get(calledClassName).getMethod(calledMethodName);
-        PigletPrinter.myPrint("\n");
-        PigletPrinter.myPrintln("HLOAD TEMP " + methodsTemp + " TEMP " + instanceTemp + " 0");
+        PigletPrinter.myPrintlnWithTab("HLOAD TEMP " + methodsTemp + " TEMP " + instanceTemp + " 0");
 
         // get method location
         int methodBias = getMethodBias(calledClassName, calledMethodName);
-        PigletPrinter.myPrintln("HLOAD TEMP " + methodsTemp + " TEMP " +
+        PigletPrinter.myPrintlnWithTab("HLOAD TEMP " + methodsTemp + " TEMP " +
                 methodsTemp + " " + methodBias);
         PigletPrinter.ReturnPrinter();
         PigletPrinter.myPrintln("TEMP" + methodsTemp);
         PigletPrinter.EndPrinter();
-        PigletPrinter.myPrintln("");
-        PigletPrinter.myPrint("(TEMP " + instanceTemp + " ");
+        PigletPrinter.myPrintWithTab("(TEMP " + instanceTemp + " ");
 
         n.f4.accept(this, calledMethod);
         PigletPrinter.myPrintln(")");
@@ -237,15 +251,15 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
 
         int instanceTemp = tempNum++;
         int methodsTemp = tempNum++;
-        PigletPrinter.BeginPrinter();
-        PigletPrinter.myPrintln(String.format("MOVE TEMP %d HALLOCATE %d",
+        PigletPrinter.BeginPrinter(false);
+        PigletPrinter.myPrintlnWithTab(String.format("MOVE TEMP %d HALLOCATE %d",
                 instanceTemp, (Variables.get(thisClassName).size() + 1) * 4));
-        PigletPrinter.myPrintln(String.format("MOVE TEMP %d HALLOCATE %d",
+        PigletPrinter.myPrintlnWithTab(String.format("MOVE TEMP %d HALLOCATE %d",
                 methodsTemp, (Methods.get(thisClassName).size() * 4)));
-        PigletPrinter.myPrintln(String.format("HSTORE TEMP %d 0 TEMP %d",
+        PigletPrinter.myPrintlnWithTab(String.format("HSTORE TEMP %d 0 TEMP %d",
                 instanceTemp, methodsTemp));
         for (int i = 0; i < thisMethods.size(); ++i) {
-            PigletPrinter.myPrintln(String.format("HSTORE TEMP %d %d %s",
+            PigletPrinter.myPrintlnWithTab(String.format("HSTORE TEMP %d %d %s",
                     methodsTemp, i * 4, thisMethods.get(i)));
         }
         PigletPrinter.ReturnPrinter();
@@ -258,7 +272,104 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
      * f0 -> <IDENTIFIER>
      */
     public MType visit(Identifier n, MType argu) {
-        n.f0.accept(this, argu);
+        String thisId = n.f0.toString();
+        // find where this identifier is
+        MClass curClass = presentClass;
+        MMethod curMethod = presentMethod;
+        MType _ret = curMethod.getVar(thisId);
+
+        if (presentLocalVar.get(thisId) != null) {
+            // 如果在局部变量中（包含前18个参数中）
+            PigletPrinter.myPrint(String.format("TEMP %s ", presentLocalVar.get(thisId).toString()));
+        } else {
+            int tmpTempNum = tempNum++;
+            int idx = -1;
+            for (int i = 0; i < curMethod.args.size(); ++i) {
+                if (curMethod.args.get(i).name.equals(thisId)) {
+                    idx = i;
+                    break;
+                }
+            }
+            assert ((idx == -1) || (idx > 18));
+            if (idx == -1) {
+                // 不在参数列表里，是成员变量
+                int varOffset = getVarOffset(thisId, curClass.getName());
+                PigletPrinter.BeginPrinter(true);
+                PigletPrinter.myPrintln(String.format("HLOAD TEMP %d TEMP 0 %d",
+                        tmpTempNum, varOffset));
+                PigletPrinter.ReturnPrinter();
+                PigletPrinter.myPrintln(String.format("Temp %d", tmpTempNum));
+                PigletPrinter.EndPrinter();
+            } else {
+                // 有超过了18个参数，需要从Temp19指向的数组中提取元素
+                getFromOver18(tmpTempNum, (idx - 18) * 4, thisId);
+            }
+        }
+        return _ret;
+    }
+
+    /**
+     * f0 -> <INTEGER_LITERAL>
+     */
+    public MType visit(IntegerLiteral n, MType argu) {
+        PigletPrinter.myPrint(String.format("%s ", n.f0.toString()));
+        return null;
+    }
+
+    /**
+     * f0 -> "true"
+     */
+    public MType visit(TrueLiteral n, MType argu) {
+        PigletPrinter.myPrint("1 ");
+        return null;
+    }
+
+    /**
+     * f0 -> "false"
+     */
+    public MType visit(FalseLiteral n, MType argu) {
+        PigletPrinter.myPrint("0 ");
+        return null;
+    }
+
+    /**
+     * f0 -> "class"
+     * f1 -> Identifier()
+     * f2 -> "{"
+     * f3 -> ( VarDeclaration() )*
+     * f4 -> ( MethodDeclaration() )*
+     * f5 -> "}"
+     */
+    public MType visit(ClassDeclaration n, MType argu) {
+        String thisClassName = n.f1.f0.toString();
+        MClass thisClass = MClassList.get(thisClassName);
+        presentClass = thisClass;
+
+        n.f4.accept(this, thisClass);
+        return null;
+    }
+
+    /**
+     * f0 -> "public"
+     * f1 -> Type()
+     * f2 -> Identifier()
+     * f3 -> "("
+     * f4 -> ( FormalParameterList() )?
+     * f5 -> ")"
+     * f6 -> "{"
+     * f7 -> ( VarDeclaration() )*
+     * f8 -> ( Statement() )*
+     * f9 -> "return"
+     * f10 -> Expression()
+     * f11 -> ";"
+     * f12 -> "}"
+     */
+    public MType visit(MethodDeclaration n, MType argu) {
+        String thisMethodName = n.f2.f0.toString();
+        MMethod thisMethod = presentClass.methods.get(thisMethodName);
+        presentLocalVar = new Hashtable<>();
+        presentLocalVar.put("this", 0);
+        tempNum = 20;
         return null;
     }
 

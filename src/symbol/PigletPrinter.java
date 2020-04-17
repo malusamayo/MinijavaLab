@@ -1,55 +1,49 @@
 package symbol;
 
 public class PigletPrinter {
-    public static String piglet_code;
     public static int tabNum = 0;
-    public static boolean toString = false;
-
-    public static void saveCode(String file_path) {
-
-    }
 
     public static void myPrintln(String s) {
-        if (toString) {
-            piglet_code += s + '\n';
-            for (int idx = 0; idx < tabNum; ++idx) {
-                piglet_code += "\t";
-            }
+        System.out.println(s);
+    }
+
+    public static void myPrintlnWithTab(String s) {
+        for (int idx = 0; idx < tabNum; ++idx) {
+            System.out.print("\t");
         }
-        else {
-            System.out.println(s);
-            for (int idx = 0; idx < tabNum; ++idx) {
-                System.out.print("\t");
-            }
-        }
+        System.out.println(s);
     }
 
     public static void myPrint(String s) {
-        if (toString) {
-            piglet_code += s;
+        System.out.print(s);
+    }
+
+    public static void myPrintWithTab(String s) {
+        for (int idx = 0; idx < tabNum; ++idx) {
+            System.out.print("\t");
         }
-        else {
-            System.out.print(s);
-        }
+        System.out.print(s);
     }
 
     public static void MainPrinter() {
+        myPrintlnWithTab("MAIN");
         tabNum++;
-        myPrintln("MAIN");
     }
 
     public static void EndPrinter() {
         tabNum--;
-        myPrintln("END");
+        myPrintlnWithTab("END");
     }
 
-    public static void BeginPrinter() {
-        myPrintln("BEGIN");
+    public static void BeginPrinter(boolean withTab) {
+        if (withTab)
+            myPrintlnWithTab("BEGIN");
+        else
+            myPrintln("BEGIN");
         tabNum++;
     }
 
     public static void ReturnPrinter() {
-        myPrint("RETURN");
-        tabNum--;
+        myPrintWithTab("RETURN ");
     }
 }
