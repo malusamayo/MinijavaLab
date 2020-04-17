@@ -179,6 +179,16 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         PigletPrinter.myPrintWithTab("MOVE TEMP " + instanceTemp + " ");
 
         // process PrimaryExpression
+        // [debug] for debug
+        /*
+        MType tmpType = n.f0.accept(this, argu);
+        if (tmpType == null) {
+            System.out.println("DEBUG");
+        }
+        assert tmpType != null;
+        String calledClassName = tmpType.getType();
+        */
+        // [debug] debug end
         String calledClassName = n.f0.accept(this, argu).getType();
         MMethod calledMethod = MClassList.get(calledClassName).getMethod(calledMethodName);
         PigletPrinter.myPrintlnWithTab("HLOAD TEMP " + methodsTemp + " TEMP " + instanceTemp + " 0");
@@ -194,7 +204,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
 
         n.f4.accept(this, calledMethod);
         PigletPrinter.myPrintln(")");
-        return null;
+        return new MType(calledMethod.returnType);
     }
 
     /**
