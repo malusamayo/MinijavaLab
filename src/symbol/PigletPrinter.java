@@ -44,6 +44,7 @@ public class PigletPrinter {
     }
 
     public static void ReturnPrinter() {
+        myPrint("\n");
         myPrintWithTab("RETURN ");
     }
 }

@@ -9,6 +9,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             InputStream in = new FileInputStream(args[0]);
+            String fileName = args[0].substring(0, args[0].indexOf('.'));
             Node root = new MiniJavaParser(in).Goal();
             MType allClassList = new MClassList();
             root.accept(new BuildSymbolTableVisitor(), allClassList);
@@ -28,6 +29,8 @@ public class Main {
             }
 
             // Lab2 starts from here
+            FileOutputStream outFile = new FileOutputStream(fileName+".pg");
+            System.setOut(new PrintStream(outFile));
             root.accept(new PigletTranslatorVisitor(), allClassList);
         } catch (TokenMgrError | Exception e) {
             e.printStackTrace();
