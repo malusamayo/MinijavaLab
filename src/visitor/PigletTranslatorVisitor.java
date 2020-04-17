@@ -1,10 +1,8 @@
 package visitor;
 
-import com.sun.org.apache.xpath.internal.operations.Plus;
 import symbol.*;
 import syntaxtree.*;
 
-import javax.xml.stream.events.EndDocument;
 import java.util.*;
 
 public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
@@ -25,9 +23,9 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
 
     private int getVarOffset(String varName, String className) {
         Vector<String> thisVarList = Variables.get(className);
-        String realName = String.format("%s_%s", className, varName);
-        for (int idx = 0; idx < thisVarList.size(); ++idx) {
-            if (thisVarList.get(idx).equals(realName))
+        for (int idx = thisVarList.size() - 1; idx >= 0; idx--) {
+            String curValue = thisVarList.get(idx);
+            if (curValue.substring(curValue.indexOf('_') + 1).equals(varName))
                 return (idx + 1) * 4;
         }
         throw new UnknownError("Unknown Error from get member variables");
@@ -76,7 +74,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
                 int existIdx = -1;
                 for (int x = 0; x < methodList.size(); ++x) {
                     String curVal = methodList.get(x);
-                    curVal = curVal.substring(curVal.indexOf('_'));
+                    curVal = curVal.substring(curVal.indexOf('_') + 1);
                     if (curVal.equals(method))
                         existIdx = x;
                 }
@@ -229,6 +227,10 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
                 methodsTemp, (Methods.get(thisClassName).size() * 4)));
         PigletPrinter.myPrintlnWithTab(String.format("HSTORE TEMP %d 0 TEMP %d",
                 instanceTemp, methodsTemp));
+        for (int i = 0; i < Variables.get(thisClassName).size(); ++i) {
+            PigletPrinter.myPrintlnWithTab(String.format("HSTORE TEMP %d %d 0",
+                    instanceTemp, (i + 1) * 4));
+        }
         for (int i = 0; i < thisMethods.size(); ++i) {
             PigletPrinter.myPrintlnWithTab(String.format("HSTORE TEMP %d %d %s",
                     methodsTemp, i * 4, thisMethods.get(i)));
@@ -321,6 +323,25 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
     }
 
     /**
+     * f0 -> "class"
+     * f1 -> Identifier()
+     * f2 -> "extends"
+     * f3 -> Identifier()
+     * f4 -> "{"
+     * f5 -> ( VarDeclaration() )*
+     * f6 -> ( MethodDeclaration() )*
+     * f7 -> "}"
+     */
+    public MType visit(ClassExtendsDeclaration n, MType argu) {
+        String thisClassName = n.f1.f0.toString();
+        MClass thisClass = MClassList.get(thisClassName);
+
+        presentClass = thisClass;
+        n.f6.accept(this, thisClass);
+        return null;
+    }
+
+    /**
      * f0 -> "public"
      * f1 -> Type()
      * f2 -> Identifier()
@@ -374,6 +395,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         n.f10.accept(this, thisMethod);
         PigletPrinter.myPrintln("");
         PigletPrinter.EndPrinter();
+        PigletPrinter.tabNum--;
         return null;
     }
 
