@@ -212,7 +212,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         PigletPrinter.myPrintlnWithTab("HLOAD TEMP " + methodsTemp + " TEMP " +
                 methodsTemp + " " + methodBias);
         PigletPrinter.ReturnPrinter();
-        PigletPrinter.myPrintln("TEMP" + methodsTemp);
+        PigletPrinter.myPrintln("TEMP " + methodsTemp);
         PigletPrinter.EndPrinter();
         PigletPrinter.myPrintWithTab("(TEMP " + instanceTemp + " ");
 
@@ -350,6 +350,50 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
     }
 
     /**
+    * f0 -> Expression()
+    * f1 -> ( ExpressionRest() )*
+    */
+    public MType visit(ExpressionList n, MType argu) {
+        MMethod curMethod = (MMethod) argu;
+        MArgInfo argInfo = new MArgInfo(1, curMethod);
+        n.f0.accept(this, argu);
+        n.f1.accept(this, argInfo);
+        return null;
+    }
+
+    /**
+    * f0 -> ","
+    * f1 -> Expression()
+    */
+    public MType visit(ExpressionRest n, MType argu) {
+        MArgInfo argInfo = (MArgInfo) argu;
+        argInfo.curArgIdx++;
+        assert (argInfo.curArgIdx >= 2);
+        if (argInfo.curArgIdx < 19) {
+            n.f1.accept(this, argInfo.curMethod);
+        }
+        else if (argInfo.curArgIdx == 19) {
+            PigletPrinter.BeginPrinter(false);
+            argInfo.tmpTempNum = tempNum++;
+            PigletPrinter.myPrintlnWithTab(String.format("MOVE TEMP %d HALLOCATE %d",
+                argInfo.tmpTempNum, 4 * (argInfo.curMethod.args.size() - 18)));
+            PigletPrinter.myPrint(String.format("HSTORE TEMP %d 0 ", argInfo.tmpTempNum));
+            n.f1.accept(this, argInfo.curMethod);
+        }
+        else {
+            PigletPrinter.myPrint(String.format("HSTORE TEMP %d %d ", argInfo.tmpTempNum,
+                4 * (argInfo.curArgIdx - 19)));
+            n.f1.accept(this, argInfo.curMethod);
+        }
+        if (argInfo.curArgIdx == argInfo.curMethod.args.size()) {
+            PigletPrinter.ReturnPrinter();
+            PigletPrinter.myPrintln(String.format("TEMP %d", argInfo.tmpTempNum));
+            PigletPrinter.EndPrinter();
+        }
+        return null;
+    }
+
+    /**
      * f0 -> "public"
      * f1 -> Type()
      * f2 -> Identifier()
@@ -367,10 +411,42 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
     public MType visit(MethodDeclaration n, MType argu) {
         String thisMethodName = n.f2.f0.toString();
         MMethod thisMethod = presentClass.methods.get(thisMethodName);
+        presentMethod = thisMethod;
         presentLocalVar = new Hashtable<>();
         presentLocalVar.put("this", 0);
         tempNum = 20;
+        int idx = 1;
+        // 为前18个参数和局部变量分配寄存器
+        if (thisMethod.args.size() <= 18) {
+            for (int i = 0; i < thisMethod.args.size(); ++i) {
+                presentLocalVar.put(thisMethod.args.get(i).getName(), idx++);
+            }
+        }
+        else {
+            for (int i = 0; i < 18; ++i) {
+                presentLocalVar.put(thisMethod.args.get(i).getName(), idx++);
+            }
+        }
+        for (String localName : thisMethod.vars.keySet()) {
+            boolean containsFlag = false;
+            for (MVar var : thisMethod.args) {
+                if (var.name.equals(localName)) {
+                    containsFlag = true;
+                    break;
+                }
+            }
+            if (containsFlag) continue;
+            presentLocalVar.put(localName, tempNum++);
+        }
+        
+        PigletPrinter.myPrintlnWithTab(String.format("%s_%s [ %d ]", presentClass.getName(),
+            presentMethod.getName(), Math.min(presentMethod.args.size() + 1, 20)));
+        PigletPrinter.tabNum++;
+        PigletPrinter.BeginPrinter(true);
+        n.f8.accept(this, thisMethod);
+        PigletPrinter.ReturnPrinter();
+        n.f10.accept(this, thisMethod);
+        PigletPrinter.EndPrinter();
         return null;
     }
-
 }
