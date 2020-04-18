@@ -2,8 +2,14 @@ class test {
     public static void main(String[] args) {
         T t;
         int x;
+        int y;
         t = new T();
         x = t.run_test();
+        y = 0;
+        if (!(x < y))
+            System.out.println(0);
+        else
+            System.out.println(1);
     }
 }
 
@@ -16,6 +22,9 @@ class A {
     }
 
     public int print() {
+        int y;
+        System.out.println(x);
+        y = this.change();
         System.out.println(x);
         return 0;
     }

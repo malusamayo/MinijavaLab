@@ -32,7 +32,6 @@ public class PigletPrinter {
 
     public static void EndPrinter() {
         tabNum--;
-        myPrint("\n");
         myPrintlnWithTab("END");
     }
 
@@ -45,7 +44,7 @@ public class PigletPrinter {
     }
 
     public static void ReturnPrinter() {
-        myPrint("\n");
+        myPrintln("");
         myPrintWithTab("RETURN ");
     }
 }

@@ -270,6 +270,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         PigletPrinter.myPrintln("");
         PigletPrinter.EndPrinter();
         PigletPrinter.tabNum--;
+        PigletPrinter.myPrintln("");
         return null;
     }
 
@@ -289,7 +290,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         PigletPrinter.myPrintln("");
         PigletPrinter.myPrintlnWithTab(String.format("MOVE TEMP %d HALLOCATE TIMES 4 PLUS 1 TEMP %d",
                 retTemp, tmpTemp));
-        PigletPrinter.myPrintWithTab(String.format("HSTORE TEMP %d 0 TEMP %d", retTemp, tmpTemp)); // store len
+        PigletPrinter.myPrintlnWithTab(String.format("HSTORE TEMP %d 0 TEMP %d", retTemp, tmpTemp)); // store len
         PigletPrinter.ReturnPrinter();
         PigletPrinter.myPrintln("TEMP " + retTemp);
         PigletPrinter.EndPrinter();
@@ -322,8 +323,9 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
             if (idx == -1) {
                 // 不在参数列表里，是成员变量
                 int varOffset = getVarOffset(thisId, curClass.getName());
+                PigletPrinter.myPrintln("");
                 PigletPrinter.BeginPrinter(true);
-                PigletPrinter.myPrintln(String.format("HLOAD TEMP %d TEMP 0 %d",
+                PigletPrinter.myPrintlnWithTab(String.format("HLOAD TEMP %d TEMP 0 %d",
                         tmpTempNum, varOffset));
                 PigletPrinter.ReturnPrinter();
                 PigletPrinter.myPrintln(String.format("TEMP %d", tmpTempNum));
@@ -540,6 +542,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         // [debug] debug end
         String calledClassName = n.f0.accept(this, argu).getType();
         MMethod calledMethod = MClassList.get(calledClassName).getMethod(calledMethodName);
+        PigletPrinter.myPrintln("");
         PigletPrinter.myPrintlnWithTab("HLOAD TEMP " + methodsTemp + " TEMP " + instanceTemp + " 0");
 
         // get method location
@@ -616,7 +619,8 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
 
         int instanceTemp = tempNum++;
         int methodsTemp = tempNum++;
-        PigletPrinter.BeginPrinter(false);
+        PigletPrinter.myPrintln("");
+        PigletPrinter.BeginPrinter(true);
         PigletPrinter.myPrintlnWithTab(String.format("MOVE TEMP %d HALLOCATE %d",
                 instanceTemp, (Variables.get(thisClassName).size() + 1) * 4));
         PigletPrinter.myPrintlnWithTab(String.format("MOVE TEMP %d HALLOCATE %d",
@@ -655,7 +659,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         PigletPrinter.myPrintWithTab(String.format("MOVE TEMP %d PLUS TEMP %d TIMES 4 PLUS 1 ", tmpTemp, tmpTemp));
         n.f2.accept(this, argu);
         PigletPrinter.myPrintln("");
-        PigletPrinter.myPrintWithTab(String.format("HLOAD TEMP %d TEMP %d 0", retTemp, tmpTemp));
+        PigletPrinter.myPrintlnWithTab(String.format("HLOAD TEMP %d TEMP %d 0", retTemp, tmpTemp));
         PigletPrinter.ReturnPrinter();
         PigletPrinter.myPrintln("TEMP " + retTemp);
         PigletPrinter.EndPrinter();
@@ -674,7 +678,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         PigletPrinter.myPrintWithTab(String.format("MOVE TEMP %d ", retTemp));
         n.f0.accept(this, argu);
         PigletPrinter.myPrintln("");
-        PigletPrinter.myPrintWithTab(String.format("HLOAD TEMP %d TEMP %d 0", retTemp, retTemp));
+        PigletPrinter.myPrintlnWithTab(String.format("HLOAD TEMP %d TEMP %d 0", retTemp, retTemp));
         PigletPrinter.ReturnPrinter();
         PigletPrinter.myPrintln("TEMP " + retTemp);
         PigletPrinter.EndPrinter();
@@ -801,7 +805,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
      * f1 -> Expression()
      */
     public MType visit(NotExpression n, MType argu) {
-        PigletPrinter.myPrintWithTab("MINUS 1");
+        PigletPrinter.myPrintWithTab("MINUS 1 ");
         return n.f1.accept(this, argu);
     }
 
