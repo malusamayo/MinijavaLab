@@ -162,7 +162,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         presentClass = curClass;
         presentMethod = mainMethod;
 
-        presentLocalVar = new Hashtable<String, Integer>();
+        presentLocalVar = new Hashtable<>();
         presentLocalVar.put("this", 0);
         tempNum = 20;
 
