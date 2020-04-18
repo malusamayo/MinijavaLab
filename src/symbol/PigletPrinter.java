@@ -36,9 +36,10 @@ public class PigletPrinter {
     }
 
     public static void BeginPrinter(boolean withTab) {
-        if (withTab)
+        myPrintln("");
+        if (withTab) {
             myPrintlnWithTab("BEGIN");
-        else
+        } else
             myPrintln("BEGIN");
         tabNum++;
     }

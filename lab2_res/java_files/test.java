@@ -6,10 +6,11 @@ class test {
         t = new T();
         x = t.run_test();
         y = 0;
-        if (!(x < y))
+        if (!(x < y) && (x < 1))
             System.out.println(0);
         else
             System.out.println(1);
+
     }
 }
 
@@ -24,7 +25,7 @@ class A {
     public int print() {
         int y;
         System.out.println(x);
-        y = this.change();
+        x = 100;
         System.out.println(x);
         return 0;
     }
@@ -35,6 +36,10 @@ class B extends A {
 
     public int change() {
         x = 100;
+        return 0;
+    }
+    public int Bprint() {
+        System.out.println(x);
         return 0;
     }
 
@@ -63,6 +68,7 @@ class T {
         int x;
         x = b.change();
         x = b.print();
+        x = b.Bprint();
         return 0;
     }
 
