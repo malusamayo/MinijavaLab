@@ -9,6 +9,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
 
     private Hashtable<String, Vector<String>> Variables = new Hashtable<>();
     private Hashtable<String, Vector<String>> Methods = new Hashtable<>();
+    private Hashtable<String, String> renamedMethods = new Hashtable<>();
     private Hashtable<String, Integer> presentLocalVar = new Hashtable<>();
     private Integer tempNum = 20; // current temp number
     private Integer labelNum = 0;
@@ -87,6 +88,22 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         Methods.put(thisClass.getName(), methodList);
     }
 
+    private void buildRenameMap() {
+        ArrayList<String> allMethods = new ArrayList<>();
+        for (Map.Entry<String, MClass> stringMClassEntry : MClassList.classList.entrySet()) {
+            MClass curClass = stringMClassEntry.getValue();
+            for (String method : curClass.methods.keySet()) {
+                String midName = curClass.getName() + "@" + method;
+                String finalName = curClass.getName() + "_" + method;
+                while (allMethods.contains(finalName)) {
+                    finalName = finalName + '_';
+                }
+                allMethods.add(finalName);
+                renamedMethods.put(midName, finalName);
+            }
+        }
+    }
+
     private int getMethodBias(String className, String methodName) {
         Vector<String> thisMethodList = Methods.get(className);
         for (int idx = 0; idx < thisMethodList.size(); ++idx) {
@@ -104,6 +121,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
      * f2 -> <EOF>
      */
     public MType visit(Goal n, MType argu) {
+        buildRenameMap();
         // get class information
         for (Map.Entry<String, MClass> stringMClassEntry : MClassList.classList.entrySet()) {
             MClass curClass = stringMClassEntry.getValue();
@@ -233,7 +251,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         }
         for (int i = 0; i < thisMethods.size(); ++i) {
             PigletPrinter.myPrintlnWithTab(String.format("HSTORE TEMP %d %d %s",
-                    methodsTemp, i * 4, thisMethods.get(i).replace('@', '_')));
+                    methodsTemp, i * 4, renamedMethods.get(thisMethods.get(i))));
         }
         PigletPrinter.ReturnPrinter();
         PigletPrinter.myPrintln("TEMP " + instanceTemp);
@@ -386,8 +404,9 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
             presentLocalVar.put(localName, tempNum++);
         }
 
-        PigletPrinter.myPrintlnWithTab(String.format("%s_%s [ %d ]", presentClass.getName(),
-                presentMethod.getName(), Math.min(presentMethod.args.size() + 1, 20)));
+        PigletPrinter.myPrintlnWithTab(String.format("%s [ %d ]",
+                renamedMethods.get(presentClass.getName() + '@' +presentMethod.getName()),
+                Math.min(presentMethod.args.size() + 1, 20)));
         PigletPrinter.tabNum++;
         PigletPrinter.BeginPrinter(true);
         n.f8.accept(this, thisMethod);
