@@ -621,12 +621,13 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
                 argInfo.tmpTempNum = tempNum++;
                 PigletPrinter.myPrintlnWithTab(String.format("MOVE TEMP %d HALLOCATE %d",
                         argInfo.tmpTempNum, 4 * (argInfo.curMethod.args.size() - 18)));
-                PigletPrinter.myPrint(String.format("HSTORE TEMP %d 0 ", argInfo.tmpTempNum));
+                PigletPrinter.myPrintWithTab(String.format("HSTORE TEMP %d 0 ", argInfo.tmpTempNum));
             } else {
-                PigletPrinter.myPrint(String.format("HSTORE TEMP %d %d ", argInfo.tmpTempNum,
+                PigletPrinter.myPrintWithTab(String.format("HSTORE TEMP %d %d ", argInfo.tmpTempNum,
                         4 * (argInfo.curArgIdx - 19)));
             }
             n.f1.accept(this, argInfo.curMethod);
+            PigletPrinter.myPrintln("");
             if (argInfo.curArgIdx == argInfo.curMethod.args.size()) {
                 PigletPrinter.ReturnPrinter();
                 PigletPrinter.myPrintln(String.format("TEMP %d", argInfo.tmpTempNum));
