@@ -6,10 +6,10 @@ class test {
         t = new T();
         x = t.run_test();
         y = 0;
-        if (!(x < y) && (x < 1))
-            System.out.println(0);
-        else
-            System.out.println(1);
+//        if (!(x < y) && (x < 1))
+//            System.out.println(0);
+//        else
+//            System.out.println(1);
 
     }
 }

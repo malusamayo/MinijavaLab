@@ -575,7 +575,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         int instanceTemp = tempNum++;
         int methodsTemp = tempNum++;
         String calledMethodName = n.f2.f0.toString();
-        PigletPrinter.myPrintln("CALL");
+        PigletPrinter.myPrint("CALL");
         PigletPrinter.BeginPrinter(true);
         PigletPrinter.myPrintWithTab("MOVE TEMP " + instanceTemp + " ");
 
@@ -712,7 +712,6 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
             if (idx == -1) {
                 // 不在参数列表里，是成员变量
                 int varOffset = getVarOffset(thisId, curClass.getName());
-                PigletPrinter.myPrintln("");
                 PigletPrinter.BeginPrinter(true);
                 PigletPrinter.myPrintlnWithTab(String.format("HLOAD TEMP %d TEMP 0 %d",
                         tmpTempNum, varOffset));
@@ -748,7 +747,6 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
 
         int instanceTemp = tempNum++;
         int methodsTemp = tempNum++;
-        PigletPrinter.myPrintln("");
         PigletPrinter.BeginPrinter(true);
         PigletPrinter.myPrintlnWithTab(String.format("MOVE TEMP %d HALLOCATE %d",
                 instanceTemp, (variables.get(thisClassName).size() + 1) * 4));
@@ -770,15 +768,14 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         return new MType(thisClassName);
     }
 
-
-
     /**
-     * f0 -> "(" f1 -> Expression() f2 -> ")"
+     * f0 -> "("
+     * f1 -> Expression()
+     * f2 -> ")"
      */
     public MType visit(BracketExpression n, MType argu) {
         return n.f1.accept(this, argu);
     }
-
 
     /**
      * f0 -> "this"

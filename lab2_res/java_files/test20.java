@@ -3,14 +3,13 @@ class test20 {
         Test t;
         int x;
         t = new Test();
-        x = t.run_test(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23);
+        x = t.run_test(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19);
     }
 }
 
 class Test {
     public int run_test(int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8, int a9, int a10,
-                        int a11, int a12, int a13, int a14, int a15, int a16, int a17, int a18, int a19, int a20,
-                        int a21, int a22, int a23) {
+                        int a11, int a12, int a13, int a14, int a15, int a16, int a17, int a18, int a19) {
         System.out.println(a1);
         System.out.println(a2);
         System.out.println(a3);
@@ -30,10 +29,6 @@ class Test {
         System.out.println(a17);
         System.out.println(a18);
         System.out.println(a19);
-        System.out.println(a20);
-        System.out.println(a21);
-        System.out.println(a22);
-        System.out.println(a23);
         return 0;
     }
 }

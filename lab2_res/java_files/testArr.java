@@ -1,6 +1,7 @@
 class testArr{
     public static void main(String[] s){
         int[] x;
+        int[] y;
         A a;
         x = new int[3];
         x[2] = 10;
@@ -12,6 +13,9 @@ class testArr{
         x = a.getArray();
         x[(a.getidx())] = 8;
         System.out.println((a.getArray())[(a.getidx())]);
+        y = x;
+        y[2] = 10;
+        System.out.println(x[(a.getidx())]);
     }
 }
 
