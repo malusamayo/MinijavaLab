@@ -25,7 +25,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         Vector<String> thisVarList = Variables.get(className);
         for (int idx = thisVarList.size() - 1; idx >= 0; idx--) {
             String curValue = thisVarList.get(idx);
-            if (curValue.substring(curValue.indexOf('_') + 1).equals(varName))
+            if (curValue.substring(curValue.indexOf('@') + 1).equals(varName))
                 return (idx + 1) * 4;
         }
         throw new UnknownError("Unknown Error from get member variables");
@@ -52,7 +52,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         // add root variables first
         for (int idx = classList.size() - 1; idx >= 0; idx--) {
             for (String key : classList.get(idx).vars.keySet()) {
-                varList.add(String.format("%s_%s", classList.get(idx).getName(), key));
+                varList.add(String.format("%s@%s", classList.get(idx).getName(), key));
             }
         }
         Variables.put(thisClass.getName(), varList);
@@ -74,14 +74,14 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
                 int existIdx = -1;
                 for (int x = 0; x < methodList.size(); ++x) {
                     String curVal = methodList.get(x);
-                    curVal = curVal.substring(curVal.indexOf('_') + 1);
+                    curVal = curVal.substring(curVal.indexOf('@') + 1);
                     if (curVal.equals(method))
                         existIdx = x;
                 }
                 if (existIdx < 0)
-                    methodList.add(String.format("%s_%s", className, method));
+                    methodList.add(String.format("%s@%s", className, method));
                 else
-                    methodList.set(existIdx, String.format("%s_%s", className, method));
+                    methodList.set(existIdx, String.format("%s@%s", className, method));
             }
         }
         Methods.put(thisClass.getName(), methodList);
@@ -91,7 +91,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         Vector<String> thisMethodList = Methods.get(className);
         for (int idx = 0; idx < thisMethodList.size(); ++idx) {
             String thisMethodName = thisMethodList.get(idx);
-            thisMethodName = thisMethodName.substring(thisMethodName.indexOf('_') + 1);
+            thisMethodName = thisMethodName.substring(thisMethodName.indexOf('@') + 1);
             if (thisMethodName.equals(methodName))
                 return idx * 4;
         }
@@ -233,7 +233,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         }
         for (int i = 0; i < thisMethods.size(); ++i) {
             PigletPrinter.myPrintlnWithTab(String.format("HSTORE TEMP %d %d %s",
-                    methodsTemp, i * 4, thisMethods.get(i)));
+                    methodsTemp, i * 4, thisMethods.get(i).replace('@', '_')));
         }
         PigletPrinter.ReturnPrinter();
         PigletPrinter.myPrintln("TEMP " + instanceTemp);
