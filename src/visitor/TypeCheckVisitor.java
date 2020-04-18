@@ -445,12 +445,13 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
             handleUndefined("method: " + methodName.getType(), n.f1.beginLine);
             return _ret;
         }
+        ((MMethod) argu).addTempArgs();
 
         n.f3.accept(this, argu);
         n.f4.accept(this, argu);
         n.f5.accept(this, argu);
 
-        MMethod.checkRealArgs(curMethod.getArgs(), ((MMethod) argu).realArgs, methodName.getType(), n.f1.beginLine);
+        MMethod.checkRealArgs(curMethod.getArgs(), ((MMethod) argu).tempArgStack.pop(), methodName.getType(), n.f1.beginLine);
 
         _ret = new MType(curMethod.getReturnType());
         return _ret;
@@ -463,7 +464,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
     public MType visit(ExpressionList n, MType argu) {
         MType _ret = null;
         MType type = n.f0.accept(this, argu);
-        ((MMethod) argu).insertRealArgs(new MVar("token", type.getType(), -1, -1));
+        ((MMethod) argu).insertTempArgs(new MVar("token", type.getType(), -1, -1));
         n.f1.accept(this, argu);
         return _ret;
     }
@@ -476,7 +477,7 @@ public class TypeCheckVisitor extends GJDepthFirst<MType, MType> {
         MType _ret = null;
         n.f0.accept(this, argu);
         MType type = n.f1.accept(this, argu);
-        ((MMethod) argu).insertRealArgs(new MVar("token", type.getType(), -1, -1));
+        ((MMethod) argu).insertTempArgs(new MVar("token", type.getType(), -1, -1));
         return _ret;
     }
 

@@ -483,7 +483,7 @@ type mismatch (assign): Test, int in line 14
 ../../../test_code/private_tests/tests/test71.java
 21:	int i;		// TE
 Type error!
-repeated variable name i in class: next
+repeated variable name i in method: next
 **********************************************************************************
 
 **********************************************************************************

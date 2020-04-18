@@ -2,13 +2,15 @@ package symbol;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Stack;
 
 public class MMethod extends MIdentifier {
     public String returnType;
     public String parent; // the method's class
     public HashMap<String, MVar> vars = new HashMap<>();
     public ArrayList<MVar> args = new ArrayList<>();
-    public ArrayList<MVar> realArgs = new ArrayList<>(); // used for real arg check
+//    public ArrayList<MVar> realArgs = new ArrayList<>(); // used for real arg check
+    public Stack<ArrayList<MVar>> tempArgStack = new Stack<>();
 
     public MMethod(String name, String returnType, String parent, int row, int col) {
         super(name, row, col);
@@ -40,8 +42,12 @@ public class MMethod extends MIdentifier {
         return errMsg;
     }
 
-    public void insertRealArgs(MVar var) {
-        realArgs.add(var);
+    public void addTempArgs() {
+        tempArgStack.push(new ArrayList<MVar>());
+    }
+
+    public void insertTempArgs(MVar var) {
+        tempArgStack.peek().add(var);
     }
 
     public ArrayList<MVar> getArgs() {
@@ -97,7 +103,6 @@ public class MMethod extends MIdentifier {
             String errMsg = "arg type mismatch: " + info +  " in line " + line;
             ErrorPrinter.addError(errMsg);
         }
-        realArgs.clear();
     }
 
 }
