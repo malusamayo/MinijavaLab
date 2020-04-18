@@ -27,11 +27,10 @@ public class Main {
                     throw new ParseException("TE");
                 }
             }
-
-            // Lab2 starts from here
             FileOutputStream outFile = new FileOutputStream(fileName+".pg");
             System.setOut(new PrintStream(outFile));
             root.accept(new PigletTranslatorVisitor(), allClassList);
+
         } catch (TokenMgrError | Exception e) {
             e.printStackTrace();
         }
