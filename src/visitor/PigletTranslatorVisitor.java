@@ -237,7 +237,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         presentLocalVar.put("this", 0);
         tempNum = 20;
         int idx = 1;
-        // 为前18个参数和局部变量分配寄存器
+        // allocate regs for first 18 args and local vars
         if (thisMethod.args.size() <= 18) {
             for (int i = 0; i < thisMethod.args.size(); ++i) {
                 presentLocalVar.put(thisMethod.args.get(i).getName(), idx++);
@@ -300,7 +300,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
     public MType visit(IfStatement n, MType argu) {
         int L1 = labelNum++;
         int L2 = labelNum++;
-        PigletPrinter.myPrintWithTab("CJUMP "); // 如果条件不满足则跳转
+        PigletPrinter.myPrintWithTab("CJUMP "); // jump when conditions are not satisfied
         n.f2.accept(this, argu);
         PigletPrinter.myPrintlnWithTab("L" + L1);
         n.f4.accept(this, argu);
@@ -369,11 +369,11 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
             int idx = getArgIdx(leftVarName, curMethod);
             assert ((idx == -1) || (idx > 18));
             if (idx == -1) {
-                // 不在参数列表里，是成员变量
+                // field of current class
                 PigletPrinter.myPrintWithTab(String.format("HSTORE TEMP 0 %d ",
                         getVarOffset(leftVarName, curClass.getName())));
             } else {
-                // 有超过了18个参数，需要从Temp19指向的数组中存储元素
+                // args stored in heap
                 PigletPrinter.myPrintWithTab(String.format("HSTORE TEMP 19 %d ",
                         4 * (idx - 18)));
             }
@@ -397,8 +397,8 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         String leftVarName = n.f0.f0.toString();
         MMethod curMethod = (MMethod) argu;
         MClass curClass = MClassList.get(curMethod.getParent());
-        int arrTemp = tempNum++; // 数组指针寄存器
-        int tmpTemp = tempNum++; // 因为HLOAD后面的偏移只能接数字，所以必须先找到指针位置
+        int arrTemp = tempNum++; // reg for pointer to the array
+        int tmpTemp = tempNum++; // the offset after HLOAD must be integer, so we find pointer pos first
 
         if (presentLocalVar.get(leftVarName) != null) {
             PigletPrinter.myPrintlnWithTab(String.format("MOVE TEMP %d TEMP %d", arrTemp,
@@ -407,11 +407,9 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
             int idx = getArgIdx(leftVarName, curMethod);
             assert ((idx == -1) || (idx > 18));
             if (idx == -1) {
-                // 不在参数列表里，是成员变量
                 PigletPrinter.myPrintlnWithTab(String.format("HLOAD TEMP %d TEMP 0 %d ",
                         arrTemp, getVarOffset(leftVarName, curClass.getName())));
             } else {
-                // 有超过了18个参数，需要从Temp19指向的数组中提取元素
                 PigletPrinter.myPrintlnWithTab(String.format("HLOAD TEMP %d TEMP 19 %d ",
                         arrTemp, 4 * (idx - 18)));
             }
@@ -703,14 +701,12 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
         MType _ret = curMethod.getVar(thisId);
 
         if (presentLocalVar.get(thisId) != null) {
-            // 如果在局部变量中（包含前18个参数中）
             PigletPrinter.myPrint(String.format("TEMP %s ", presentLocalVar.get(thisId).toString()));
         } else {
             int tmpTempNum = tempNum++;
             int idx = getArgIdx(thisId, curMethod);
             assert ((idx == -1) || (idx > 18));
             if (idx == -1) {
-                // 不在参数列表里，是成员变量
                 int varOffset = getVarOffset(thisId, curClass.getName());
                 PigletPrinter.BeginPrinter(true);
                 PigletPrinter.myPrintlnWithTab(String.format("HLOAD TEMP %d TEMP 0 %d",
@@ -719,7 +715,6 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
                 PigletPrinter.myPrintln(String.format("TEMP %d", tmpTempNum));
                 PigletPrinter.EndPrinter();
             } else {
-                // 有超过了18个参数，需要从Temp19指向的数组中提取元素
                 PigletPrinter.BeginPrinter(true);
                 PigletPrinter.myPrintln(String.format("HLOAD TEMP %d TEMP 19 %d",
                         tmpTempNum, (idx - 18) * 4));
@@ -739,9 +734,8 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
      * f3 -> ")"
      */
     public MType visit(AllocationExpression n, MType argu) {
-        // 生成函数体，以BEGIN开头，RETURN结尾
-        // 返回一个寄存器，存储instance的位置
-        // instance的格式：methods的头的地址->var1->var2...
+        // return a reg for the instance
+        // Vtable: pointer to Dtable -> var1 -> var2 -> ...
         String thisClassName = n.f1.f0.toString();
         Vector<String> thisMethods = methods.get(thisClassName);
 
@@ -783,7 +777,7 @@ public class PigletTranslatorVisitor extends GJDepthFirst<MType, MType> {
     public MType visit(ThisExpression n, MType argu) {
         assert (argu instanceof MMethod);
         PigletPrinter.myPrintln("TEMP 0 ");
-        // 如果没有bug，这里的presentClass和curMethod.parent应该是一样的
+        // presentClass == curMethod.parent must hold if no bugs
         MMethod curMethod = (MMethod) argu;
         assert (presentClass.getName().equals(curMethod.parent));
         return new MType(curMethod.parent);
