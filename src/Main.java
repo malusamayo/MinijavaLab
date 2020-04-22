@@ -3,7 +3,6 @@ import java.io.*;
 import visitor.*;
 import syntaxtree.*;
 import symbol.*;
-import piglet.*;
 
 
 public class Main {
@@ -13,7 +12,7 @@ public class Main {
             String fileName = args[0].substring(0, args[0].indexOf('.'));
             String fileType = args[0].substring(args[0].indexOf('.'));
             if (fileType.equals(".pg")) {
-                piglet.syntaxtree.Node root = new PigletParser(in).Goal();
+                piglet.syntaxtree.Node root = new piglet.PigletParser(in).Goal();
             }
             else {
                 Node root = new MiniJavaParser(in).Goal();
