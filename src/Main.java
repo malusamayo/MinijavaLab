@@ -16,6 +16,8 @@ public class Main {
                 piglet.syntaxtree.Node root = new piglet.PigletParser(in).Goal();
                 FileOutputStream outFile = new FileOutputStream(fileName + ".spg");
                 System.setOut(new PrintStream(outFile));
+                root.accept(new piglet.visitor.CountTempMax(), null);
+                root.accept(new piglet.visitor.SPigletTranslator(), null);
             }
             else {
                 Node root = new MiniJavaParser(in).Goal();
