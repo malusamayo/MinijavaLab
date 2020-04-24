@@ -12,7 +12,10 @@ public class Main {
             String fileName = args[0].substring(0, args[0].indexOf('.'));
             String fileType = args[0].substring(args[0].indexOf('.'));
             if (fileType.equals(".pg")) {
+                // lab3 starts
                 piglet.syntaxtree.Node root = new piglet.PigletParser(in).Goal();
+                FileOutputStream outFile = new FileOutputStream(fileName + ".spg");
+                System.setOut(new PrintStream(outFile));
             }
             else {
                 Node root = new MiniJavaParser(in).Goal();
