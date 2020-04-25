@@ -19,6 +19,8 @@ if sys.argv[1] == "-a" or sys.argv[1] == "-all":
         print("test file %s: " % file_name.ljust(15, ' '), end='')
         os.system("java -cp bin/production/minijava Main test_codes/pg_files/%s"
                   % pg_file)
+#        os.system("java -jar bin/artifacts/minijava_jar/minijava.jar test_codes/pg_files/%s"
+#                  % pg_file)
         parseRes = os.popen("java -jar spp.jar < test_codes/pg_files/%s.spg" %
                             file_name).read()
         if parseRes != "Program parsed successfully\n":
