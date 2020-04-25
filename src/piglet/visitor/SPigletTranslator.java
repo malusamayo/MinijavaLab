@@ -56,9 +56,7 @@ public class SPigletTranslator extends GJDepthFirst<String, String> {
         String procedureName = n.f0.f0.toString();
         SPigletPrinter.myPrintln(String.format("%s [%s]", procedureName, n.f2.f0.toString()));
         SPigletPrinter.printBegin();
-        String retValue = n.f4.accept(this, procedureName);
-        SPigletPrinter.printReturn();
-        SPigletPrinter.myPrintln(retValue);
+        SPigletPrinter.myPrintln(String.format("RETURN %s", n.f4.accept(this, procedureName)));
         SPigletPrinter.printEnd();
         return null;
     }

@@ -23,10 +23,6 @@ public class SPigletPrinter {
         printTab = true;
     }
 
-    public static void printReturn() {
-        myPrintln("RETURN");
-    }
-
     public static void printEnd() {
         printTab = false;
         myPrintln("END");
