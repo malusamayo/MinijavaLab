@@ -58,7 +58,7 @@ public class GJDepthFirst<R,A> implements GJVisitor<R,A> {
    public R visit(NodeToken n, A argu) { return null; }
 
    //
-   // User-generated visitor methods below
+   // User-generated minijava.visitor methods below
    //
 
    /**

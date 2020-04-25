@@ -3,7 +3,7 @@ package piglet;
 import piglet.syntaxtree.*;
 import java.util.Vector;
 
-/** Token Manager. */
+/** minijava.Token Manager. */
 public class PigletParserTokenManager implements PigletParserConstants
 {
 
@@ -738,7 +738,7 @@ private static final boolean jjCanMove_1(int hiByte, int i1, int i2, long l1, lo
    }
 }
 
-/** Token literal values. */
+/** minijava.Token literal values. */
 public static final String[] jjstrLiteralImages = {
 "", null, null, null, null, null, null, null, null, "\50", "\51", "\173", 
 "\175", "\133", "\135", "\56", "\114\124", "\114\105", "\107\124", "\107\105", 
@@ -843,7 +843,7 @@ static int jjround;
 static int jjmatchedPos;
 static int jjmatchedKind;
 
-/** Get the next Token. */
+/** Get the next minijava.Token. */
 public static Token getNextToken() 
 {
   //int kind;

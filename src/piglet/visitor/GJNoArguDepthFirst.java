@@ -58,7 +58,7 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
    public R visit(NodeToken n) { return null; }
 
    //
-   // User-generated visitor methods below
+   // User-generated minijava.visitor methods below
    //
 
    /**

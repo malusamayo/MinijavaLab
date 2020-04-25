@@ -23,7 +23,7 @@ public interface Visitor {
    public void visit(NodeToken n);
 
    //
-   // User-generated visitor methods below
+   // User-generated minijava.visitor methods below
    //
 
    /**

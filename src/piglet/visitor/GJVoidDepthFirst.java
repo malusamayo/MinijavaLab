@@ -48,7 +48,7 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
    public void visit(NodeToken n, A argu) {}
 
    //
-   // User-generated visitor methods below
+   // User-generated minijava.visitor methods below
    //
 
    /**

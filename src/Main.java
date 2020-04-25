@@ -1,8 +1,11 @@
 import java.io.*;
 
-import visitor.*;
-import syntaxtree.*;
-import symbol.*;
+import minijava.MiniJavaParser;
+import minijava.ParseException;
+import minijava.TokenMgrError;
+import minijava.visitor.*;
+import minijava.syntaxtree.*;
+import minijava.symbol.*;
 
 
 public class Main {

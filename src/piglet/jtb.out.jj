@@ -7,7 +7,7 @@ options {
 }
 
 PARSER_BEGIN(PigletParser)
-import piglet.syntaxtree.*;
+import piglet.minijava.syntaxtree.*;
 import java.util.Vector;
 
 
@@ -15,8 +15,8 @@ public class PigletParser
 {
 }
 
-class JTBToolkit {
-   static NodeToken makeNodeToken(Token t) {
+class minijava.JTBToolkit {
+   static NodeToken makeNodeToken(minijava.Token t) {
       return new NodeToken(t.image.intern(), t.kind, t.beginLine, t.beginColumn, t.endLine, t.endColumn);
    }
 }
@@ -96,21 +96,21 @@ TOKEN :
 Goal Goal() :
 {
    NodeToken n0;
-   Token n1;
+   minijava.Token n1;
    StmtList n2;
    NodeToken n3;
-   Token n4;
+   minijava.Token n4;
    NodeListOptional n5 = new NodeListOptional();
    Procedure n6;
    NodeToken n7;
-   Token n8;
+   minijava.Token n8;
 
    
 }
 {
-   n1="MAIN" { n0 = JTBToolkit.makeNodeToken(n1); }
+   n1="MAIN" { n0 = minijava.JTBToolkit.makeNodeToken(n1); }
    n2=StmtList()
-   n4="END" { n3 = JTBToolkit.makeNodeToken(n4); }
+   n4="END" { n3 = minijava.JTBToolkit.makeNodeToken(n4); }
    (
       n6=Procedure()
       { n5.addNode(n6); }
@@ -118,7 +118,7 @@ Goal Goal() :
    { n5.nodes.trimToSize(); }
    n8=<EOF> { 
       n8.beginColumn++; n8.endColumn++;
-      n7 = JTBToolkit.makeNodeToken(n8);
+      n7 = minijava.JTBToolkit.makeNodeToken(n8);
    }
    
    { return new Goal(n0,n2,n3,n5,n7); }
@@ -156,19 +156,19 @@ Procedure Procedure() :
 {
    Label n0;
    NodeToken n1;
-   Token n2;
+   minijava.Token n2;
    IntegerLiteral n3;
    NodeToken n4;
-   Token n5;
+   minijava.Token n5;
    StmtExp n6;
 
    
 }
 {
    n0=Label()
-   n2="[" { n1 = JTBToolkit.makeNodeToken(n2); }
+   n2="[" { n1 = minijava.JTBToolkit.makeNodeToken(n2); }
    n3=IntegerLiteral()
-   n5="]" { n4 = JTBToolkit.makeNodeToken(n5); }
+   n5="]" { n4 = minijava.JTBToolkit.makeNodeToken(n5); }
    n6=StmtExp()
    
    { return new Procedure(n0,n1,n3,n4,n6); }
@@ -221,12 +221,12 @@ Stmt Stmt() :
 NoOpStmt NoOpStmt() :
 {
    NodeToken n0;
-   Token n1;
+   minijava.Token n1;
 
    
 }
 {
-   n1="NOOP" { n0 = JTBToolkit.makeNodeToken(n1); }
+   n1="NOOP" { n0 = minijava.JTBToolkit.makeNodeToken(n1); }
    
    { return new NoOpStmt(n0); }
 }
@@ -234,12 +234,12 @@ NoOpStmt NoOpStmt() :
 ErrorStmt ErrorStmt() :
 {
    NodeToken n0;
-   Token n1;
+   minijava.Token n1;
 
    
 }
 {
-   n1="ERROR" { n0 = JTBToolkit.makeNodeToken(n1); }
+   n1="ERROR" { n0 = minijava.JTBToolkit.makeNodeToken(n1); }
    
    { return new ErrorStmt(n0); }
 }
@@ -247,14 +247,14 @@ ErrorStmt ErrorStmt() :
 CJumpStmt CJumpStmt() :
 {
    NodeToken n0;
-   Token n1;
+   minijava.Token n1;
    Exp n2;
    Label n3;
 
    
 }
 {
-   n1="CJUMP" { n0 = JTBToolkit.makeNodeToken(n1); }
+   n1="CJUMP" { n0 = minijava.JTBToolkit.makeNodeToken(n1); }
    n2=Exp()
    n3=Label()
    
@@ -264,13 +264,13 @@ CJumpStmt CJumpStmt() :
 JumpStmt JumpStmt() :
 {
    NodeToken n0;
-   Token n1;
+   minijava.Token n1;
    Label n2;
 
    
 }
 {
-   n1="JUMP" { n0 = JTBToolkit.makeNodeToken(n1); }
+   n1="JUMP" { n0 = minijava.JTBToolkit.makeNodeToken(n1); }
    n2=Label()
    
    { return new JumpStmt(n0,n2); }
@@ -279,7 +279,7 @@ JumpStmt JumpStmt() :
 HStoreStmt HStoreStmt() :
 {
    NodeToken n0;
-   Token n1;
+   minijava.Token n1;
    Exp n2;
    IntegerLiteral n3;
    Exp n4;
@@ -287,7 +287,7 @@ HStoreStmt HStoreStmt() :
    
 }
 {
-   n1="HSTORE" { n0 = JTBToolkit.makeNodeToken(n1); }
+   n1="HSTORE" { n0 = minijava.JTBToolkit.makeNodeToken(n1); }
    n2=Exp()
    n3=IntegerLiteral()
    n4=Exp()
@@ -298,7 +298,7 @@ HStoreStmt HStoreStmt() :
 HLoadStmt HLoadStmt() :
 {
    NodeToken n0;
-   Token n1;
+   minijava.Token n1;
    Temp n2;
    Exp n3;
    IntegerLiteral n4;
@@ -306,7 +306,7 @@ HLoadStmt HLoadStmt() :
    
 }
 {
-   n1="HLOAD" { n0 = JTBToolkit.makeNodeToken(n1); }
+   n1="HLOAD" { n0 = minijava.JTBToolkit.makeNodeToken(n1); }
    n2=Temp()
    n3=Exp()
    n4=IntegerLiteral()
@@ -317,14 +317,14 @@ HLoadStmt HLoadStmt() :
 MoveStmt MoveStmt() :
 {
    NodeToken n0;
-   Token n1;
+   minijava.Token n1;
    Temp n2;
    Exp n3;
 
    
 }
 {
-   n1="MOVE" { n0 = JTBToolkit.makeNodeToken(n1); }
+   n1="MOVE" { n0 = minijava.JTBToolkit.makeNodeToken(n1); }
    n2=Temp()
    n3=Exp()
    
@@ -334,13 +334,13 @@ MoveStmt MoveStmt() :
 PrintStmt PrintStmt() :
 {
    NodeToken n0;
-   Token n1;
+   minijava.Token n1;
    Exp n2;
 
    
 }
 {
-   n1="PRINT" { n0 = JTBToolkit.makeNodeToken(n1); }
+   n1="PRINT" { n0 = minijava.JTBToolkit.makeNodeToken(n1); }
    n2=Exp()
    
    { return new PrintStmt(n0,n2); }
@@ -389,22 +389,22 @@ Exp Exp() :
 StmtExp StmtExp() :
 {
    NodeToken n0;
-   Token n1;
+   minijava.Token n1;
    StmtList n2;
    NodeToken n3;
-   Token n4;
+   minijava.Token n4;
    Exp n5;
    NodeToken n6;
-   Token n7;
+   minijava.Token n7;
 
    
 }
 {
-   n1="BEGIN" { n0 = JTBToolkit.makeNodeToken(n1); }
+   n1="BEGIN" { n0 = minijava.JTBToolkit.makeNodeToken(n1); }
    n2=StmtList()
-   n4="RETURN" { n3 = JTBToolkit.makeNodeToken(n4); }
+   n4="RETURN" { n3 = minijava.JTBToolkit.makeNodeToken(n4); }
    n5=Exp()
-   n7="END" { n6 = JTBToolkit.makeNodeToken(n7); }
+   n7="END" { n6 = minijava.JTBToolkit.makeNodeToken(n7); }
    
    { return new StmtExp(n0,n2,n3,n5,n6); }
 }
@@ -412,27 +412,27 @@ StmtExp StmtExp() :
 Call Call() :
 {
    NodeToken n0;
-   Token n1;
+   minijava.Token n1;
    Exp n2;
    NodeToken n3;
-   Token n4;
+   minijava.Token n4;
    NodeListOptional n5 = new NodeListOptional();
    Exp n6;
    NodeToken n7;
-   Token n8;
+   minijava.Token n8;
 
    
 }
 {
-   n1="CALL" { n0 = JTBToolkit.makeNodeToken(n1); }
+   n1="CALL" { n0 = minijava.JTBToolkit.makeNodeToken(n1); }
    n2=Exp()
-   n4="(" { n3 = JTBToolkit.makeNodeToken(n4); }
+   n4="(" { n3 = minijava.JTBToolkit.makeNodeToken(n4); }
    (
       n6=Exp()
       { n5.addNode(n6); }
    )*
    { n5.nodes.trimToSize(); }
-   n8=")" { n7 = JTBToolkit.makeNodeToken(n8); }
+   n8=")" { n7 = minijava.JTBToolkit.makeNodeToken(n8); }
    
    { return new Call(n0,n2,n3,n5,n7); }
 }
@@ -440,13 +440,13 @@ Call Call() :
 HAllocate HAllocate() :
 {
    NodeToken n0;
-   Token n1;
+   minijava.Token n1;
    Exp n2;
 
    
 }
 {
-   n1="HALLOCATE" { n0 = JTBToolkit.makeNodeToken(n1); }
+   n1="HALLOCATE" { n0 = minijava.JTBToolkit.makeNodeToken(n1); }
    n2=Exp()
    
    { return new HAllocate(n0,n2); }
@@ -472,28 +472,28 @@ Operator Operator() :
 {
    NodeChoice n0;
    NodeToken n1;
-   Token n2;
+   minijava.Token n2;
    NodeToken n3;
-   Token n4;
+   minijava.Token n4;
    NodeToken n5;
-   Token n6;
+   minijava.Token n6;
    NodeToken n7;
-   Token n8;
+   minijava.Token n8;
 
    
 }
 {
    (
-      n2="LT" { n1 = JTBToolkit.makeNodeToken(n2); }
+      n2="LT" { n1 = minijava.JTBToolkit.makeNodeToken(n2); }
       { n0 = new NodeChoice(n1, 0); }
    |
-      n4="PLUS" { n3 = JTBToolkit.makeNodeToken(n4); }
+      n4="PLUS" { n3 = minijava.JTBToolkit.makeNodeToken(n4); }
       { n0 = new NodeChoice(n3, 1); }
    |
-      n6="MINUS" { n5 = JTBToolkit.makeNodeToken(n6); }
+      n6="MINUS" { n5 = minijava.JTBToolkit.makeNodeToken(n6); }
       { n0 = new NodeChoice(n5, 2); }
    |
-      n8="TIMES" { n7 = JTBToolkit.makeNodeToken(n8); }
+      n8="TIMES" { n7 = minijava.JTBToolkit.makeNodeToken(n8); }
       { n0 = new NodeChoice(n7, 3); }
    )
    
@@ -503,13 +503,13 @@ Operator Operator() :
 Temp Temp() :
 {
    NodeToken n0;
-   Token n1;
+   minijava.Token n1;
    IntegerLiteral n2;
 
    
 }
 {
-   n1="TEMP" { n0 = JTBToolkit.makeNodeToken(n1); }
+   n1="TEMP" { n0 = minijava.JTBToolkit.makeNodeToken(n1); }
    n2=IntegerLiteral()
    
    { return new Temp(n0,n2); }
@@ -518,12 +518,12 @@ Temp Temp() :
 IntegerLiteral IntegerLiteral() :
 {
    NodeToken n0;
-   Token n1;
+   minijava.Token n1;
 
    
 }
 {
-   n1=<INTEGER_LITERAL> { n0 = JTBToolkit.makeNodeToken(n1); }
+   n1=<INTEGER_LITERAL> { n0 = minijava.JTBToolkit.makeNodeToken(n1); }
    
    { return new IntegerLiteral(n0); }
 }
@@ -531,12 +531,12 @@ IntegerLiteral IntegerLiteral() :
 Label Label() :
 {
    NodeToken n0;
-   Token n1;
+   minijava.Token n1;
 
    
 }
 {
-   n1=<IDENTIFIER> { n0 = JTBToolkit.makeNodeToken(n1); }
+   n1=<IDENTIFIER> { n0 = minijava.JTBToolkit.makeNodeToken(n1); }
    
    { return new Label(n0); }
 }

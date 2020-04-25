@@ -39,8 +39,8 @@ MaxKBytes=140
 
 GeneratedClasses=(${ParserClassName}ParserTokenManager \
 	${ParserClassName}ParserConstants ${ParserClassName}Parser \
-	Token JavaCharStream TokenMgrError ParseException JTBToolkit)
-GeneratedDirs=(visitor syntaxtree)
+	minijava.Token minijava.JavaCharStream minijava.TokenMgrError minijava.ParseException minijava.JTBToolkit)
+GeneratedDirs=(minijava.visitor minijava.syntaxtree)
 
 # ------------------------------------------------------------
 
