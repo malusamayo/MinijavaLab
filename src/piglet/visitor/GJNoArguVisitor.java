@@ -23,7 +23,7 @@ public interface GJNoArguVisitor<R> {
    public R visit(NodeToken n);
 
    //
-   // User-generated minijava.visitor methods below
+   // User-generated minijava.spiglet.visitor methods below
    //
 
    /**

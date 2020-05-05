@@ -1626,7 +1626,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
   }
 
   static private boolean jj_initialized_once = false;
-  /** Generated minijava.Token Manager. */
+  /** Generated minijava.spiglet.Token Manager. */
   static public MiniJavaParserTokenManager token_source;
   static JavaCharStream jj_input_stream;
   /** Current token. */
@@ -1723,7 +1723,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
-  /** Constructor with generated minijava.Token Manager. */
+  /** Constructor with generated minijava.spiglet.Token Manager. */
   public MiniJavaParser(MiniJavaParserTokenManager tm) {
     if (jj_initialized_once) {
       System.out.println("ERROR: Second call to constructor of static parser. ");
@@ -1798,7 +1798,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
   }
 
 
-/** Get the next minijava.Token. */
+/** Get the next minijava.spiglet.Token. */
   static final public Token getNextToken() {
     if (token.next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
@@ -1807,7 +1807,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     return token;
   }
 
-/** Get the specific minijava.Token. */
+/** Get the specific minijava.spiglet.Token. */
   static final public Token getToken(int index) {
     Token t = jj_lookingAhead ? jj_scanpos : token;
     for (int i = 0; i < index; i++) {
@@ -1858,7 +1858,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
   }
 
-  /** Generate minijava.ParseException. */
+  /** Generate minijava.spiglet.ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
     boolean[] la1tokens = new boolean[49];
