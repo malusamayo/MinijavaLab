@@ -19,7 +19,7 @@ public class Main {
                 spiglet.syntaxtree.Node root = new spiglet.SpigletParser(in).Goal();
                 FileOutputStream outFile = new FileOutputStream(fileName + ".kg");
                 System.setOut(new PrintStream(outFile));
-                root.accept(new spiglet.visitor.GJDepthFirst<String, String>(), null);
+                root.accept(new spiglet.visitor.BuildGraphVisitor(), null);
             } else if (fileType.equals(".pg")) {
                 // lab3 starts
                 piglet.syntaxtree.Node root = new piglet.PigletParser(in).Goal();
