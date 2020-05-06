@@ -20,6 +20,7 @@ public class Main {
                 FileOutputStream outFile = new FileOutputStream(fileName + ".kg");
                 System.setOut(new PrintStream(outFile));
                 root.accept(new spiglet.visitor.BuildGraphVisitor(), null);
+                root.accept(new spiglet.visitor.KangaTranslator(), null);
             } else if (fileType.equals(".pg")) {
                 // lab3 starts
                 piglet.syntaxtree.Node root = new piglet.PigletParser(in).Goal();
