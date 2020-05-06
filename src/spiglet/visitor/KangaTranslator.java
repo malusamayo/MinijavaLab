@@ -14,6 +14,25 @@ import java.util.*;
  * order.  Your visitors may extend this class.
  */
 public class KangaTranslator extends GJDepthFirst<String, MMethod> {
+
+    public String getReg(String destReg, int num, MMethod curMethod, boolean inKill) {
+        if (curMethod.tReg.containsKey(num))
+            return "t" + curMethod.tReg.get(num);
+        else if (curMethod.sReg.containsKey(num))
+            return "s" + curMethod.sReg.get(num);
+        else if (!inKill){
+            KangaPrinter.myPrintln("ALOAD " + destReg + " SPILLEDARG " + curMethod.stack.get(num));
+        }
+        return destReg;
+    }
+
+    public void saveReg(String srcReg, int num, MMethod curMethod) {
+        if (curMethod.tReg.containsKey(num) || curMethod.sReg.containsKey(num))
+            return;
+        else
+            KangaPrinter.myPrintln("ASTORE SPILLEDARG " + curMethod.stack.get(num) + " " + srcReg);
+    }
+
     //
     // Auto class visitors--probably don't need to be overridden.
     //
@@ -27,6 +46,8 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
         else
             return null;
     }
+
+    public String visit(NodeToken n, MMethod argu) { return n.tokenImage; }
 
     //
     // User-generated visitor methods below
@@ -67,7 +88,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
         n.f1.accept(this, argu);
         n.f2.accept(this, argu);
         n.f3.accept(this, argu);
-        n.f4.accept(this, argu);
+        n.f4.accept(this, curMethod);
         return _ret;
     }
 
@@ -101,7 +122,8 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
         n.f0.accept(this, argu);
         int num = Integer.parseInt(n.f1.accept(this, argu));
         String label = n.f2.accept(this, argu);
-        KangaPrinter.myPrintln(String.format("CJUMP %s %s", "", label));
+        String reg = getReg("v0", num, argu, false);
+        KangaPrinter.myPrintln(String.format("CJUMP %s %s", reg, label));
         return _ret;
     }
 
@@ -112,7 +134,8 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
     public String visit(JumpStmt n, MMethod argu) {
         String _ret=null;
         n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
+        String label = n.f1.accept(this, argu);
+        KangaPrinter.myPrintln("JUMP " + label);
         return _ret;
     }
 
@@ -125,9 +148,12 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
     public String visit(HStoreStmt n, MMethod argu) {
         String _ret=null;
         n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-        n.f3.accept(this, argu);
+        int n1 = Integer.parseInt(n.f1.accept(this, argu));
+        String offset = n.f2.accept(this, argu);
+        int n2 = Integer.parseInt(n.f3.accept(this, argu));
+        String reg1 = getReg("v0", n1, argu, false);
+        String reg2 = getReg("v1", n2, argu, false);
+        KangaPrinter.myPrintln(String.format("HSTORE %s %s %s", reg1, offset, reg2));
         return _ret;
     }
 
@@ -140,9 +166,13 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
     public String visit(HLoadStmt n, MMethod argu) {
         String _ret=null;
         n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-        n.f3.accept(this, argu);
+        int n1 = Integer.parseInt(n.f1.accept(this, argu));
+        int n2 = Integer.parseInt(n.f2.accept(this, argu));
+        String offset = n.f3.accept(this, argu);
+        String reg1 = getReg("v0", n1, argu, true);
+        String reg2 = getReg("v1", n2, argu, false);
+        KangaPrinter.myPrintln(String.format("HLOAD %s %s %s", reg1, reg2, offset));
+        saveReg(reg1, n1, argu);
         return _ret;
     }
 
@@ -154,8 +184,12 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
     public String visit(MoveStmt n, MMethod argu) {
         String _ret=null;
         n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
+        int n1 = Integer.parseInt(n.f1.accept(this, argu));
+        String exp = n.f2.accept(this, argu);
+
+        String reg1 = getReg("v0", n1, argu, true);
+        KangaPrinter.myPrintln(String.format("MOVE %s %s", reg1, exp));
+        saveReg(reg1, n1, argu);
         return _ret;
     }
 
@@ -166,7 +200,8 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
     public String visit(PrintStmt n, MMethod argu) {
         String _ret=null;
         n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
+        String exp = n.f1.accept(this, argu);
+        KangaPrinter.myPrintln("PRINT " + exp);
         return _ret;
     }
 
@@ -177,8 +212,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      *       | SimpleExp()
      */
     public String visit(Exp n, MMethod argu) {
-        String _ret=null;
-        n.f0.accept(this, argu);
+        String _ret = n.f0.accept(this, argu);
         return _ret;
     }
 
@@ -191,12 +225,41 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      */
     public String visit(StmtExp n, MMethod argu) {
         String _ret=null;
-        n.f0.accept(this, argu);
+        // save regs
+        if (argu.getsRegNumMax() > 0) {
+            int offset = Integer.max(argu.getArgNum() - 4, 0);
+            for (int i = 0; i < argu.getsRegNumMax(); i++)
+                KangaPrinter.myPrintln(String.format("ASTORE SPILLEDARG %d s%d", offset + i ,i));
+        }
+        int bounds = Integer.min(argu.getArgNum(), 4);
+        for (int i = 0; i < bounds; i++) {
+            if (argu.intervals.containsKey(i)) { // some args may never be used
+                String reg = getReg("v0", i, argu, true);
+                KangaPrinter.myPrintln("MOVE " + reg + " a" + i);
+                saveReg(reg, i, argu);
+            }
+        }
+        if (argu.getArgNum() > 4) {
+            for (int i = 4; i< argu.getArgNum(); i++) {
+                if (argu.intervals.containsKey(i)) { // some args may never be used
+                    String reg = getReg("v0", i, argu, true);
+                    KangaPrinter.myPrintln(String.format("ALOAD %s SPILLEDARG %d", reg, i - 4));
+                    saveReg(reg, i, argu);
+                }
+            }
+        }
+
         n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-        n.f3.accept(this, argu);
+        String exp = n.f3.accept(this, argu);
+        KangaPrinter.myPrintln("MOVE v0 " + exp); // return info
+
+        // restore regs
+        if (argu.getsRegNumMax() > 0) {
+            int offset = Integer.max(argu.getArgNum() - 4, 0);
+            for (int i = 0; i < argu.getsRegNumMax(); i++)
+                KangaPrinter.myPrintln(String.format("ALOAD s%d SPILLEDARG %d", i, offset + i));
+        }
         KangaPrinter.printEnd();
-        n.f4.accept(this, argu);
         return _ret;
     }
 
@@ -208,12 +271,25 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * f4 -> ")"
      */
     public String visit(Call n, MMethod argu) {
-        String _ret=null;
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-        n.f3.accept(this, argu);
-        n.f4.accept(this, argu);
+        String _ret = "v0";
+
+        // first build args
+        Vector<Node> args = n.f3.nodes;
+        int bounds = Integer.min(args.size(), 4);
+        for (int i = 0; i < bounds; i++) {
+            int num = Integer.parseInt(args.get(i).accept(this, argu));
+            String reg = getReg("v1", num, argu, false);
+            KangaPrinter.myPrintln(String.format("MOVE a%d %s", i, reg));
+        }
+        if (args.size() > 4) {
+            for (int i = 4; i < args.size(); i++) {
+                int num = Integer.parseInt(args.get(i).accept(this, argu));
+                String reg = getReg("v1", num, argu, false);
+                KangaPrinter.myPrintln(String.format("PASSARG %d %s", i - 3, reg));
+            }
+        }
+        String exp = n.f1.accept(this, argu);
+        KangaPrinter.myPrintln("CALL " + exp);
         return _ret;
     }
 
@@ -224,7 +300,8 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
     public String visit(HAllocate n, MMethod argu) {
         String _ret=null;
         n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
+        String exp = n.f1.accept(this, argu);
+        _ret = "HALLOCATE " + exp;
         return _ret;
     }
 
@@ -235,9 +312,11 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      */
     public String visit(BinOp n, MMethod argu) {
         String _ret=null;
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
+        String op = n.f0.accept(this, argu);
+        int n1 = Integer.parseInt(n.f1.accept(this, argu));
+        String exp = n.f2.accept(this, argu);
+        String reg1 = getReg("v0", n1, argu, false);
+        _ret = String.format("%s %s %s", op, reg1, exp);
         return _ret;
     }
 
@@ -248,8 +327,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      *       | "TIMES"
      */
     public String visit(Operator n, MMethod argu) {
-        String _ret=null;
-        n.f0.accept(this, argu);
+        String _ret = n.f0.accept(this, argu);
         return _ret;
     }
 
@@ -259,8 +337,11 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      *       | Label()
      */
     public String visit(SimpleExp n, MMethod argu) {
-        String _ret=null;
-        n.f0.accept(this, argu);
+        String _ret = n.f0.accept(this, argu);
+        if (n.f0.choice instanceof Temp) {
+            String reg = getReg("v1", Integer.parseInt(_ret), argu, false);
+            return reg;
+        }
         return _ret;
     }
 
@@ -281,7 +362,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
     public String visit(IntegerLiteral n, MMethod argu) {
         String _ret=null;
         n.f0.accept(this, argu);
-        return _ret;
+        return n.f0.tokenImage;
     }
 
     /**

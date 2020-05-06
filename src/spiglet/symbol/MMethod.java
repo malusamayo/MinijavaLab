@@ -7,6 +7,7 @@ public class MMethod {
     String name;
     CGraph graph = new CGraph();
     int argNum, stackNum = 0, maxCalleeArgNum = 0;
+    long sRegNumMax = 0;
     // should stackNum be accurate?
 
     public HashSet<Integer> callSites = new HashSet<>();
@@ -50,6 +51,10 @@ public class MMethod {
 
     public int getMaxCalleeArgNum() {
         return maxCalleeArgNum;
+    }
+
+    public long getsRegNumMax() {
+        return sRegNumMax;
     }
 
     public CGraph getGraph() {
@@ -135,8 +140,14 @@ public class MMethod {
         } else
             last = activeInterval.peek();
         if (last.ed > interval.ed) {
-            freeReg(last);
-            assert checkReg(interval) == true;
+            // the spilled var should never use register
+            if (tReg.containsKey(last.num)) {
+                tReg.put(interval.num, tReg.get(last.num));
+                tReg.remove(last.num);
+            } else if (sReg.containsKey(last.num)) {
+                sReg.put(interval.num, sReg.get(last.num));
+                sReg.remove(last.num);
+            }
             stack.put(last.num, stackNum);
             stackNum++;
             activeInterval.remove(last);
@@ -148,7 +159,6 @@ public class MMethod {
     }
 
     public void linearScan() {
-        long sRegNumMax = 0;
         LinkedList<Interval> intervalList = new LinkedList<>();
         PriorityQueue<Interval> activeInterval = new PriorityQueue<>(Interval::compareByEd);
         intervalList.addAll(intervals.values());
