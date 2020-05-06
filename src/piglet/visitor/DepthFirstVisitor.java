@@ -38,7 +38,7 @@ public class DepthFirstVisitor implements Visitor {
    public void visit(NodeToken n) { }
 
    //
-   // User-generated minijava.visitor methods below
+   // User-generated minijava.spiglet.visitor methods below
    //
 
    /**

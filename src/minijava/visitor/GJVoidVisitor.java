@@ -22,7 +22,7 @@ public interface GJVoidVisitor<A> {
    public void visit(NodeToken n, A argu);
 
    //
-   // User-generated minijava.visitor methods below
+   // User-generated minijava.spiglet.visitor methods below
    //
 
    /**

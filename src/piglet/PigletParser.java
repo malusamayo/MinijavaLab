@@ -461,7 +461,7 @@ public class PigletParser implements PigletParserConstants {
   }
 
   static private boolean jj_initialized_once = false;
-  /** Generated minijava.Token Manager. */
+  /** Generated minijava.spiglet.Token Manager. */
   static public PigletParserTokenManager token_source;
   static JavaCharStream jj_input_stream;
   /** Current token. */
@@ -546,7 +546,7 @@ public class PigletParser implements PigletParserConstants {
     for (int i = 0; i < 7; i++) jj_la1[i] = -1;
   }
 
-  /** Constructor with generated minijava.Token Manager. */
+  /** Constructor with generated minijava.spiglet.Token Manager. */
   public PigletParser(PigletParserTokenManager tm) {
     if (jj_initialized_once) {
       System.out.println("ERROR: Second call to constructor of static parser. ");
@@ -586,7 +586,7 @@ public class PigletParser implements PigletParserConstants {
   }
 
 
-/** Get the next minijava.Token. */
+/** Get the next minijava.spiglet.Token. */
   static final public Token getNextToken() {
     if (token.next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
@@ -595,7 +595,7 @@ public class PigletParser implements PigletParserConstants {
     return token;
   }
 
-/** Get the specific minijava.Token. */
+/** Get the specific minijava.spiglet.Token. */
   static final public Token getToken(int index) {
     Token t = token;
     for (int i = 0; i < index; i++) {
@@ -616,7 +616,7 @@ public class PigletParser implements PigletParserConstants {
   static private int[] jj_expentry;
   static private int jj_kind = -1;
 
-  /** Generate minijava.ParseException. */
+  /** Generate minijava.spiglet.ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
     boolean[] la1tokens = new boolean[50];

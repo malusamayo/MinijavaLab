@@ -14,15 +14,21 @@ public class Main {
             InputStream in = new FileInputStream(args[0]);
             String fileName = args[0].substring(0, args[0].indexOf('.'));
             String fileType = args[0].substring(args[0].indexOf('.'));
-            if (fileType.equals(".pg")) {
+            if (fileType.equals(".spg")) {
+                // lab4 starts
+                spiglet.syntaxtree.Node root = new spiglet.SpigletParser(in).Goal();
+                FileOutputStream outFile = new FileOutputStream(fileName + ".kg");
+                System.setOut(new PrintStream(outFile));
+                root.accept(new spiglet.visitor.BuildGraphVisitor(), null);
+                root.accept(new spiglet.visitor.KangaTranslator(), null);
+            } else if (fileType.equals(".pg")) {
                 // lab3 starts
                 piglet.syntaxtree.Node root = new piglet.PigletParser(in).Goal();
                 FileOutputStream outFile = new FileOutputStream(fileName + ".spg");
                 System.setOut(new PrintStream(outFile));
                 root.accept(new piglet.visitor.CountTempMax(), null);
                 root.accept(new piglet.visitor.SPigletTranslator(), null);
-            }
-            else {
+            } else {
                 Node root = new MiniJavaParser(in).Goal();
                 MType allClassList = new MClassList();
                 root.accept(new BuildSymbolTableVisitor(), allClassList);

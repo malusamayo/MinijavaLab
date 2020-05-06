@@ -1,5 +1,5 @@
 // The classes are basically the same as the BinaryTree 
-// file except the minijava.visitor classes and the accept method
+// file except the minijava.spiglet.visitor classes and the accept method
 // in the Tree class
 
 class TreeVisitor{
