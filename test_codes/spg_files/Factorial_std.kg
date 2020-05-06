@@ -25,7 +25,7 @@ Fac_ComputeFac[2][3][2]
 	CJUMP t2 L2
 	MOVE s1 1
 	JUMP L3
-	L2	NOOP
+L2	NOOP
 	MOVE t1 t0
 	HLOAD t0 t1 0
 	HLOAD t2 t0 0
@@ -37,7 +37,7 @@ Fac_ComputeFac[2][3][2]
 	MOVE s2 v0
 	MOVE t0 TIMES s0 s2
 	MOVE s1 t0
-	L3	NOOP
+L3	NOOP
 	MOVE v0 s1
 	ALOAD s0 SPILLEDARG 0
 	ALOAD s1 SPILLEDARG 1

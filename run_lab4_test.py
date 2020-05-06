@@ -21,7 +21,7 @@ if sys.argv[1] == "-a" or sys.argv[1] == "-all":
                   % spg_file)
         ans1 = os.popen("java -jar pgi.jar < test_codes/spg_files/%s.spg" %
                         file_name).read()
-        ans2 = os.popen("java -jar kgi.jar < test_codes/pg_files/%s.kg" %
+        ans2 = os.popen("java -jar kgi.jar < test_codes/spg_files/%s.kg" %
                         file_name).read()
         if ans1 == ans2:
             print("\033[32mSuccess\033[0m")

@@ -148,12 +148,12 @@ public class MMethod {
                 sReg.put(interval.num, sReg.get(last.num));
                 sReg.remove(last.num);
             }
-            stack.put(last.num, stackNum);
+            stack.put(last.num, stackNum + 8); // avoid conflicts with saved regs
             stackNum++;
             activeInterval.remove(last);
             activeInterval.add(interval);
         } else {
-            stack.put(interval.num, stackNum);
+            stack.put(interval.num, stackNum + 8);
             stackNum++;
         }
     }

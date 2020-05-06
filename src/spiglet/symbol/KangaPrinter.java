@@ -9,7 +9,6 @@ public class KangaPrinter {
     }
 
     public static void myPrint(String s) {
-        if (printTab) System.out.print("\t");
         System.out.print(s);
     }
 
