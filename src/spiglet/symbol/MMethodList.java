@@ -13,11 +13,6 @@ public class MMethodList {
     public static void buildLiveVars() {
         for (MMethod mMethod : methodList.values()) {
             mMethod.buildLiveVars();
-//            for (Vertex v: mMethod.getGraph().vertexMap.values()){
-//                System.out.println(v.line);
-//                System.out.println(v.live);
-////                System.out.println(v.out);
-//            }
             mMethod.buildIntervals();
             mMethod.linearScan();
         }

@@ -68,7 +68,7 @@ public class MMethod {
     public void buildLiveVars() {
         LinkedList<Vertex> curVars = new LinkedList<>();
         curVars.addAll(graph.vertexMap.values());
-        Collections.sort(curVars);
+        Collections.sort(curVars); // sort by descending vertex line, could run faster
         curVars.removeFirst();
         while(!curVars.isEmpty()) {
             Vertex q = curVars.poll();
@@ -92,7 +92,7 @@ public class MMethod {
         }
         for (Interval interval: intervals.values()) {
             for (Integer i: callSites) {
-                if (interval.checkContainCall(i))
+                if (interval.checkContainCall(i)) // check and set
                     break;
             }
         }
@@ -107,6 +107,7 @@ public class MMethod {
             assert false;
     }
 
+    // check and set
     public boolean checkReg(Interval interval) {
         if (!interval.containCall) {
             for (int i=0; i<10; i++) {
@@ -174,9 +175,8 @@ public class MMethod {
             }
             if (checkReg(interval))
                 activeInterval.add(interval);
-            else {
+            else
                 spillReg(activeInterval, interval);
-            }
             // check sReg num
             sRegNumMax = Long.max(sRegNumMax, Arrays.stream(sRegUsed).filter(x -> x==true).count());
         }

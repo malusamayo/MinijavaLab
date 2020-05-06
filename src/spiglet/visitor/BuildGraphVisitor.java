@@ -17,9 +17,11 @@ import java.util.*;
  */
 public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
     int curLine;
+    // the line for the label is unknown until read, so we postpone adding the edge until end of procedure
     HashMap<String, Integer> labelToLine = new HashMap<>();
     HashMap<Integer, String> jumpLabels = new HashMap<>();
 
+    // for every temp in code, we add a corresponding interval
     public void initInterval(int num, MMethod mMethod) {
         if (mMethod.intervals.containsKey(num))
             return;
@@ -60,13 +62,16 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
         MMethodList.insert(curMethod);
 
         n.f0.accept(this, argu);
+        // the vertex for entry
         curMethod.getGraph().insertVertex(new Vertex(curLine));
         curMethod.getGraph().insertEdge(curLine, curLine+1);
         curLine++;
         n.f1.accept(this, curMethod);
+        // the vertex for exit
         curMethod.getGraph().insertVertex(new Vertex(curLine));
         curLine++;
 
+        // add jump edges
         for(Map.Entry<Integer,String> e: jumpLabels.entrySet()) {
             curMethod.getGraph().insertEdge(e.getKey(), labelToLine.get(e.getValue()));
         }
@@ -121,6 +126,7 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
      */
     public String visit(Stmt n, MMethod argu) {
         String _ret=null;
+        // add a vertex for every stmt, edges are added base on the stmt type
         Vertex v = new Vertex(curLine);
         argu.getGraph().insertVertex(v);
 
@@ -157,7 +163,7 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
     public String visit(CJumpStmt n, MMethod argu) {
         String _ret=null;
         argu.getGraph().insertEdge(curLine, curLine+1);
-        jumpLabels.put(curLine, n.f2.f0.tokenImage);
+        jumpLabels.put(curLine, n.f2.f0.tokenImage); // postpone adding edges
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         n.f2.accept(this, argu);
@@ -261,6 +267,7 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
         n.f1.accept(this, argu);
         n.f2.accept(this, argu);
 
+        // return vertex
         argu.getGraph().insertVertex(new Vertex(curLine));
         argu.getGraph().insertEdge(curLine, curLine+1);
         n.f3.accept(this, argu);
@@ -282,7 +289,7 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
      */
     public String visit(Call n, MMethod argu) {
         String _ret=null;
-        argu.addCallSites(curLine);
+        argu.addCallSites(curLine); // later used to allocate regs
         argu.setMaxCalleeArgNum(Integer.max(argu.getMaxCalleeArgNum(), n.f3.size()));
 
         n.f0.accept(this, argu);
@@ -300,7 +307,7 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
     public String visit(Temp n, MMethod argu) {
         String _ret=null;
         int num = Integer.parseInt(n.f1.f0.tokenImage);
-        argu.getGraph().addGen(curLine, num); // only used by appropriate stmts
+        argu.getGraph().addGen(curLine, num); // every temp that could reach here is a gen one
         initInterval(num, argu);
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
