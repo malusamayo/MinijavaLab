@@ -3,6 +3,7 @@
 //
 
 package spiglet.visitor;
+
 import spiglet.symbol.Interval;
 import spiglet.symbol.MMethod;
 import spiglet.symbol.MMethodList;
@@ -36,12 +37,11 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
     //
 
     public String visit(NodeOptional n, MMethod argu) {
-        if ( n.present() ) {
-            String label = n.node.accept(this,argu);
+        if (n.present()) {
+            String label = n.node.accept(this, argu);
             labelToLine.put(label, curLine);
             return label;
-        }
-        else
+        } else
             return null;
     }
 
@@ -57,14 +57,14 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
      * f4 -> <EOF>
      */
     public String visit(Goal n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         MMethod curMethod = new MMethod("MAIN", 0);
         MMethodList.insert(curMethod);
 
         n.f0.accept(this, argu);
         // the vertex for entry
         curMethod.getGraph().insertVertex(new Vertex(curLine));
-        curMethod.getGraph().insertEdge(curLine, curLine+1);
+        curMethod.getGraph().insertEdge(curLine, curLine + 1);
         curLine++;
         n.f1.accept(this, curMethod);
         // the vertex for exit
@@ -72,7 +72,7 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
         curLine++;
 
         // add jump edges
-        for(Map.Entry<Integer,String> e: jumpLabels.entrySet()) {
+        for (Map.Entry<Integer, String> e : jumpLabels.entrySet()) {
             curMethod.getGraph().insertEdge(e.getKey(), labelToLine.get(e.getValue()));
         }
         jumpLabels.clear();
@@ -93,11 +93,11 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
      * f4 -> StmtExp()
      */
     public String visit(Procedure n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         curLine = 0;
         MMethod curMethod = new MMethod(n.f0.f0.tokenImage, Integer.parseInt(n.f2.f0.tokenImage));
         if (curMethod.getArgNum() > 4)
-            curMethod.setStackNum(curMethod.getArgNum()-4);
+            curMethod.setStackNum(curMethod.getArgNum() - 4);
         MMethodList.insert(curMethod);
 
         n.f0.accept(this, argu);
@@ -106,7 +106,7 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
         n.f3.accept(this, argu);
         n.f4.accept(this, curMethod);
 
-        for(Map.Entry<Integer,String> e: jumpLabels.entrySet()) {
+        for (Map.Entry<Integer, String> e : jumpLabels.entrySet()) {
             curMethod.getGraph().insertEdge(e.getKey(), labelToLine.get(e.getValue()));
         }
         jumpLabels.clear();
@@ -116,16 +116,16 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
 
     /**
      * f0 -> NoOpStmt()
-     *       | ErrorStmt()
-     *       | CJumpStmt()
-     *       | JumpStmt()
-     *       | HStoreStmt()
-     *       | HLoadStmt()
-     *       | MoveStmt()
-     *       | PrintStmt()
+     * | ErrorStmt()
+     * | CJumpStmt()
+     * | JumpStmt()
+     * | HStoreStmt()
+     * | HLoadStmt()
+     * | MoveStmt()
+     * | PrintStmt()
      */
     public String visit(Stmt n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         // add a vertex for every stmt, edges are added base on the stmt type
         Vertex v = new Vertex(curLine);
         argu.getGraph().insertVertex(v);
@@ -139,8 +139,8 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
      * f0 -> "NOOP"
      */
     public String visit(NoOpStmt n, MMethod argu) {
-        String _ret=null;
-        argu.getGraph().insertEdge(curLine, curLine+1);
+        String _ret = null;
+        argu.getGraph().insertEdge(curLine, curLine + 1);
         n.f0.accept(this, argu);
         return _ret;
     }
@@ -149,8 +149,8 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
      * f0 -> "ERROR"
      */
     public String visit(ErrorStmt n, MMethod argu) {
-        String _ret=null;
-        argu.getGraph().insertEdge(curLine, curLine+1);
+        String _ret = null;
+        argu.getGraph().insertEdge(curLine, curLine + 1);
         n.f0.accept(this, argu);
         return _ret;
     }
@@ -161,8 +161,8 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
      * f2 -> Label()
      */
     public String visit(CJumpStmt n, MMethod argu) {
-        String _ret=null;
-        argu.getGraph().insertEdge(curLine, curLine+1);
+        String _ret = null;
+        argu.getGraph().insertEdge(curLine, curLine + 1);
         jumpLabels.put(curLine, n.f2.f0.tokenImage); // postpone adding edges
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
@@ -175,7 +175,7 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
      * f1 -> Label()
      */
     public String visit(JumpStmt n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         jumpLabels.put(curLine, n.f1.f0.tokenImage);
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
@@ -189,8 +189,8 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
      * f3 -> Temp()
      */
     public String visit(HStoreStmt n, MMethod argu) {
-        String _ret=null;
-        argu.getGraph().insertEdge(curLine, curLine+1);
+        String _ret = null;
+        argu.getGraph().insertEdge(curLine, curLine + 1);
 
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
@@ -206,8 +206,8 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
      * f3 -> IntegerLiteral()
      */
     public String visit(HLoadStmt n, MMethod argu) {
-        String _ret=null;
-        argu.getGraph().insertEdge(curLine, curLine+1);
+        String _ret = null;
+        argu.getGraph().insertEdge(curLine, curLine + 1);
         int num = Integer.parseInt(n.f1.f1.f0.tokenImage);
         argu.getGraph().addKill(curLine, num);
         initInterval(num, argu);
@@ -225,8 +225,8 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
      * f2 -> Exp()
      */
     public String visit(MoveStmt n, MMethod argu) {
-        String _ret=null;
-        argu.getGraph().insertEdge(curLine, curLine+1);
+        String _ret = null;
+        argu.getGraph().insertEdge(curLine, curLine + 1);
         int num = Integer.parseInt(n.f1.f1.f0.tokenImage);
         argu.getGraph().addKill(curLine, num);
         initInterval(num, argu);// problem: should we alloc reg for vars that never be read?
@@ -243,8 +243,8 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
      * f1 -> SimpleExp()
      */
     public String visit(PrintStmt n, MMethod argu) {
-        String _ret=null;
-        argu.getGraph().insertEdge(curLine, curLine+1);
+        String _ret = null;
+        argu.getGraph().insertEdge(curLine, curLine + 1);
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         return _ret;
@@ -258,9 +258,9 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
      * f4 -> "END"
      */
     public String visit(StmtExp n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         argu.getGraph().insertVertex(new Vertex(curLine));
-        argu.getGraph().insertEdge(curLine, curLine+1);
+        argu.getGraph().insertEdge(curLine, curLine + 1);
         curLine++;
 
         n.f0.accept(this, argu);
@@ -269,7 +269,7 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
 
         // return vertex
         argu.getGraph().insertVertex(new Vertex(curLine));
-        argu.getGraph().insertEdge(curLine, curLine+1);
+        argu.getGraph().insertEdge(curLine, curLine + 1);
         n.f3.accept(this, argu);
         curLine++;
 
@@ -288,7 +288,7 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
      * f4 -> ")"
      */
     public String visit(Call n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         argu.addCallSites(curLine); // later used to allocate regs
         argu.setMaxCalleeArgNum(Integer.max(argu.getMaxCalleeArgNum(), n.f3.size()));
 
@@ -305,7 +305,7 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
      * f1 -> IntegerLiteral()
      */
     public String visit(Temp n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         int num = Integer.parseInt(n.f1.f0.tokenImage);
         argu.getGraph().addGen(curLine, num); // every temp that could reach here is a gen one
         initInterval(num, argu);
@@ -318,7 +318,7 @@ public class BuildGraphVisitor extends GJDepthFirst<String, MMethod> {
      * f0 -> <IDENTIFIER>
      */
     public String visit(Label n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         n.f0.accept(this, argu);
         return n.f0.tokenImage;
     }

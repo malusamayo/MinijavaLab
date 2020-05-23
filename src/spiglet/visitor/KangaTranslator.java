@@ -3,10 +3,12 @@
 //
 
 package spiglet.visitor;
+
 import spiglet.symbol.KangaPrinter;
 import spiglet.symbol.MMethod;
 import spiglet.symbol.MMethodList;
 import spiglet.syntaxtree.*;
+
 import java.util.*;
 
 /**
@@ -20,7 +22,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
             return "t" + curMethod.tReg.get(num);
         else if (curMethod.sReg.containsKey(num))
             return "s" + curMethod.sReg.get(num);
-        else if (!inKill){ // if temp num does not use regs, it must be in the stack
+        else if (!inKill) { // if temp num does not use regs, it must be in the stack
             KangaPrinter.myPrintln("ALOAD " + destReg + " SPILLEDARG " + curMethod.stack.get(num));
         }
         return destReg;
@@ -38,16 +40,17 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
     //
 
     public String visit(NodeOptional n, MMethod argu) {
-        if ( n.present() ) {
-            String ret = n.node.accept(this,argu);
+        if (n.present()) {
+            String ret = n.node.accept(this, argu);
             KangaPrinter.myPrint(ret); // only used for labels
             return ret;
-        }
-        else
+        } else
             return null;
     }
 
-    public String visit(NodeToken n, MMethod argu) { return n.tokenImage; }
+    public String visit(NodeToken n, MMethod argu) {
+        return n.tokenImage;
+    }
 
     //
     // User-generated visitor methods below
@@ -61,7 +64,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * f4 -> <EOF>
      */
     public String visit(Goal n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         MMethod curMethod = MMethodList.get("MAIN");
         KangaPrinter.printMethod("MAIN", curMethod.getArgNum(),
                 curMethod.getStackNum(), curMethod.getMaxCalleeArgNum());
@@ -82,7 +85,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * f4 -> StmtExp()
      */
     public String visit(Procedure n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         MMethod curMethod = MMethodList.get(n.f0.f0.tokenImage);
         KangaPrinter.printMethod(curMethod.getName(), curMethod.getArgNum(),
                 curMethod.getStackNum(), curMethod.getMaxCalleeArgNum());
@@ -98,7 +101,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * f0 -> "NOOP"
      */
     public String visit(NoOpStmt n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         KangaPrinter.myPrintln("NOOP");
         n.f0.accept(this, argu);
         return _ret;
@@ -108,7 +111,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * f0 -> "ERROR"
      */
     public String visit(ErrorStmt n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         KangaPrinter.myPrintln("ERROR");
         n.f0.accept(this, argu);
         return _ret;
@@ -120,7 +123,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * f2 -> Label()
      */
     public String visit(CJumpStmt n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         n.f0.accept(this, argu);
         int num = Integer.parseInt(n.f1.accept(this, argu));
         String label = n.f2.accept(this, argu);
@@ -134,7 +137,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * f1 -> Label()
      */
     public String visit(JumpStmt n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         n.f0.accept(this, argu);
         String label = n.f1.accept(this, argu);
         KangaPrinter.myPrintln("JUMP " + label);
@@ -148,7 +151,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * f3 -> Temp()
      */
     public String visit(HStoreStmt n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         n.f0.accept(this, argu);
         int n1 = Integer.parseInt(n.f1.accept(this, argu));
         String offset = n.f2.accept(this, argu);
@@ -166,7 +169,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * f3 -> IntegerLiteral()
      */
     public String visit(HLoadStmt n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         n.f0.accept(this, argu);
         int n1 = Integer.parseInt(n.f1.accept(this, argu));
         int n2 = Integer.parseInt(n.f2.accept(this, argu));
@@ -184,7 +187,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * f2 -> Exp()
      */
     public String visit(MoveStmt n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         n.f0.accept(this, argu);
         int n1 = Integer.parseInt(n.f1.accept(this, argu));
         String exp = n.f2.accept(this, argu);
@@ -200,7 +203,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * f1 -> SimpleExp()
      */
     public String visit(PrintStmt n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         n.f0.accept(this, argu);
         String exp = n.f1.accept(this, argu);
         KangaPrinter.myPrintln("PRINT " + exp);
@@ -209,9 +212,9 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
 
     /**
      * f0 -> Call()
-     *       | HAllocate()
-     *       | BinOp()
-     *       | SimpleExp()
+     * | HAllocate()
+     * | BinOp()
+     * | SimpleExp()
      */
     public String visit(Exp n, MMethod argu) {
         String _ret = n.f0.accept(this, argu);
@@ -226,12 +229,12 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * f4 -> "END"
      */
     public String visit(StmtExp n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         // save s regs
         if (argu.getsRegNumMax() > 0) {
             int offset = Integer.max(argu.getArgNum() - 4, 0);
             for (int i = 0; i < argu.getsRegNumMax(); i++)
-                KangaPrinter.myPrintln(String.format("ASTORE SPILLEDARG %d s%d", offset + i ,i));
+                KangaPrinter.myPrintln(String.format("ASTORE SPILLEDARG %d s%d", offset + i, i));
         }
         // load arg to the reg or stack pos we allocate for it
         int bounds = Integer.min(argu.getArgNum(), 4);
@@ -243,7 +246,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
             }
         }
         if (argu.getArgNum() > 4) {
-            for (int i = 4; i< argu.getArgNum(); i++) {
+            for (int i = 4; i < argu.getArgNum(); i++) {
                 if (argu.intervals.containsKey(i)) { // some args may never be used
                     String reg = getReg("v0", i, argu, true);
                     KangaPrinter.myPrintln(String.format("ALOAD %s SPILLEDARG %d", reg, i - 4));
@@ -301,7 +304,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * f1 -> SimpleExp()
      */
     public String visit(HAllocate n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         n.f0.accept(this, argu);
         String exp = n.f1.accept(this, argu);
         _ret = "HALLOCATE " + exp;
@@ -314,7 +317,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * f2 -> SimpleExp()
      */
     public String visit(BinOp n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         String op = n.f0.accept(this, argu);
         int n1 = Integer.parseInt(n.f1.accept(this, argu));
         String exp = n.f2.accept(this, argu);
@@ -325,9 +328,9 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
 
     /**
      * f0 -> "LT"
-     *       | "PLUS"
-     *       | "MINUS"
-     *       | "TIMES"
+     * | "PLUS"
+     * | "MINUS"
+     * | "TIMES"
      */
     public String visit(Operator n, MMethod argu) {
         String _ret = n.f0.accept(this, argu);
@@ -336,8 +339,8 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
 
     /**
      * f0 -> Temp()
-     *       | IntegerLiteral()
-     *       | Label()
+     * | IntegerLiteral()
+     * | Label()
      */
     public String visit(SimpleExp n, MMethod argu) {
         String _ret = n.f0.accept(this, argu);
@@ -354,7 +357,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * f1 -> IntegerLiteral()
      */
     public String visit(Temp n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         return n.f1.f0.tokenImage;
@@ -364,7 +367,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * f0 -> <INTEGER_LITERAL>
      */
     public String visit(IntegerLiteral n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         n.f0.accept(this, argu);
         return n.f0.tokenImage;
     }
@@ -373,7 +376,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * f0 -> <IDENTIFIER>
      */
     public String visit(Label n, MMethod argu) {
-        String _ret=null;
+        String _ret = null;
         n.f0.accept(this, argu);
         return n.f0.tokenImage;
     }
