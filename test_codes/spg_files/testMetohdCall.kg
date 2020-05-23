@@ -1,0 +1,141 @@
+MAIN[0][9][4]
+	MOVE t0 4
+	MOVE t1 HALLOCATE t0
+	MOVE t0 4
+	MOVE t2 HALLOCATE t0
+	MOVE t0 t1
+	MOVE t3 t2
+	HSTORE t0 0 t3
+	MOVE t0 t2
+	MOVE t2 Test_run_test
+	HSTORE t0 0 t2
+	MOVE t0 t1
+	MOVE s0 t0
+	MOVE t0 s0
+	MOVE t1 t0
+	HLOAD t2 t1 0
+	MOVE t1 t2
+	HLOAD t2 t1 0
+	MOVE t1 t2
+	MOVE s1 t1
+	MOVE s2 t0
+	MOVE t0 s0
+	MOVE t1 t0
+	HLOAD t2 t1 0
+	MOVE t1 t2
+	HLOAD t2 t1 0
+	MOVE t1 t2
+	MOVE t2 t1
+	MOVE t1 t0
+	MOVE t0 100
+	MOVE t3 200
+	MOVE t4 300
+	MOVE a0 t1
+	MOVE a1 t0
+	MOVE a2 t3
+	MOVE a3 t4
+	CALL t2
+	MOVE s3 v0
+	MOVE s4 2
+	MOVE t0 s0
+	MOVE t1 t0
+	HLOAD t2 t1 0
+	MOVE t1 t2
+	HLOAD t2 t1 0
+	MOVE t1 t2
+	MOVE t2 t1
+	MOVE t1 t0
+	MOVE t0 10
+	MOVE t3 20
+	MOVE t4 30
+	MOVE a0 t1
+	MOVE a1 t0
+	MOVE a2 t3
+	MOVE a3 t4
+	CALL t2
+	MOVE s5 v0
+	MOVE a0 s2
+	MOVE a1 s3
+	MOVE a2 s4
+	MOVE a3 s5
+	CALL s1
+	MOVE t0 v0
+	MOVE t0 s0
+	MOVE t1 t0
+	HLOAD t2 t1 0
+	MOVE t1 t2
+	HLOAD t2 t1 0
+	MOVE t1 t2
+	MOVE s1 t1
+	MOVE s2 t0
+	MOVE t0 s0
+	MOVE t1 t0
+	HLOAD t2 t1 0
+	MOVE t1 t2
+	HLOAD t2 t1 0
+	MOVE t1 t2
+	MOVE s3 t1
+	MOVE s4 t0
+	MOVE s5 100
+	MOVE s6 200
+	MOVE t0 s0
+	MOVE t1 t0
+	HLOAD t2 t1 0
+	MOVE t1 t2
+	HLOAD t2 t1 0
+	MOVE t1 t2
+	MOVE t2 t1
+	MOVE t1 t0
+	MOVE t0 1000
+	MOVE t3 2000
+	MOVE t4 3000
+	MOVE a0 t1
+	MOVE a1 t0
+	MOVE a2 t3
+	MOVE a3 t4
+	CALL t2
+	MOVE s7 v0
+	MOVE a0 s4
+	MOVE a1 s5
+	MOVE a2 s6
+	MOVE a3 s7
+	CALL s3
+	MOVE v0 v0
+	ASTORE SPILLEDARG 8 v0
+	MOVE s3 2
+	MOVE t0 s0
+	MOVE t1 t0
+	HLOAD t2 t1 0
+	MOVE t1 t2
+	HLOAD t2 t1 0
+	MOVE t1 t2
+	MOVE t2 t1
+	MOVE t1 t0
+	MOVE t0 10
+	MOVE t3 20
+	MOVE t4 30
+	MOVE a0 t1
+	MOVE a1 t0
+	MOVE a2 t3
+	MOVE a3 t4
+	CALL t2
+	MOVE s0 v0
+	MOVE a0 s2
+	ALOAD v1 SPILLEDARG 8
+	MOVE a1 v1
+	MOVE a2 s3
+	MOVE a3 s0
+	CALL s1
+	MOVE t0 v0
+END
+Test_run_test[4][0][0]
+	MOVE t0 a1
+	MOVE t1 t0
+	PRINT t1
+	MOVE t1 t0
+	PRINT t1
+	MOVE t1 t0
+	PRINT t1
+	MOVE t0 0
+	MOVE v0 t0
+END

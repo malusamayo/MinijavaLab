@@ -1,0 +1,31 @@
+MAIN[0][1][1]
+	MOVE t0 4
+	MOVE t1 HALLOCATE t0
+	MOVE t0 4
+	MOVE t2 HALLOCATE t0
+	MOVE t0 t1
+	MOVE t3 t2
+	HSTORE t0 0 t3
+	MOVE t0 t2
+	MOVE t2 A_run
+	HSTORE t0 0 t2
+	MOVE t0 t1
+	MOVE t1 t0
+	MOVE t0 t1
+	HLOAD t2 t0 0
+	MOVE t0 t2
+	HLOAD t2 t0 0
+	MOVE t0 t2
+	MOVE t2 t0
+	MOVE t0 t1
+	MOVE a0 t0
+	CALL t2
+	MOVE s0 v0
+	PRINT s0
+END
+A_run[1][0][0]
+	MOVE t0 42
+	PRINT t0
+	MOVE t0 99
+	MOVE v0 t0
+END
