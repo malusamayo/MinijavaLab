@@ -217,8 +217,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * | SimpleExp()
      */
     public String visit(Exp n, MMethod argu) {
-        String _ret = n.f0.accept(this, argu);
-        return _ret;
+        return n.f0.accept(this, argu);
     }
 
     /**
@@ -333,8 +332,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
      * | "TIMES"
      */
     public String visit(Operator n, MMethod argu) {
-        String _ret = n.f0.accept(this, argu);
-        return _ret;
+        return n.f0.accept(this, argu);
     }
 
     /**
@@ -346,8 +344,7 @@ public class KangaTranslator extends GJDepthFirst<String, MMethod> {
         String _ret = n.f0.accept(this, argu);
         // return proper str or reg
         if (n.f0.choice instanceof Temp) {
-            String reg = getReg("v1", Integer.parseInt(_ret), argu, false);
-            return reg;
+            return getReg("v1", Integer.parseInt(_ret), argu, false);
         }
         return _ret;
     }
