@@ -14,6 +14,14 @@ public class Main {
             InputStream in = new FileInputStream(args[0]);
             String fileName = args[0].substring(0, args[0].indexOf('.'));
             String fileType = args[0].substring(args[0].indexOf('.'));
+            if (fileType.equals(".kg")) {
+                // final lab starts from here
+                // yeahhhhhhhhhhhhhhhhhhhhhh
+                kanga.syntaxtree.Node root = new kanga.KangaParser(in).Goal();
+                FileOutputStream outFile = new FileOutputStream(fileName + ".s");
+                System.setOut(new PrintStream(outFile));
+                root.accept(new kanga.visitor.MIPSTranslator(), null);
+            }
             if (fileType.equals(".spg")) {
                 // lab4 starts
                 spiglet.syntaxtree.Node root = new spiglet.SpigletParser(in).Goal();
