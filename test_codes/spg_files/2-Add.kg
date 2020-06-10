@@ -1,6 +1,0 @@
-MAIN[0][0][0]
-	MOVE t0 12
-	MOVE t1 21
-	MOVE t2 PLUS t0 t1
-	PRINT t2
-END
