@@ -17,7 +17,7 @@ if sys.argv[1] == "-a" or sys.argv[1] == "-all":
     for java_file in java_files:
         file_name = java_file[0:-5]
         os.system("javac test_codes/java_files/%s" % java_file)
-        os.system("java -cp bin/production/MinijavaLab Main test_codes/java_files/%s"
+        os.system("java -cp bin/production/minijava Main test_codes/java_files/%s"
                   % java_file)
         ans1 = os.popen("java -cp test_codes/java_files/ %s" % file_name).read()
         ans2 = os.popen("java -jar pgi.jar < test_codes/java_files/%s.pg" %
