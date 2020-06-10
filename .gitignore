@@ -3,4 +3,4 @@
 /bin/*
 .vscode/*
 **/*.class
-/lab2_res/java_files/*.pg
+test_codes/java_files/*.pg
